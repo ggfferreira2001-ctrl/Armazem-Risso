@@ -86,7 +86,7 @@ body{overflow:hidden}
 .view.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .bottombar{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-around;padding:7px 10px calc(7px + env(safe-area-inset-bottom));background:var(--surface);backdrop-filter:blur(12px);border-top:2px solid rgba(212,43,43,.35);z-index:10}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--faint);font-size:9.5px;font-weight:700;padding:5px 8px;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:.3px}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--faint);font-size:8.5px;font-weight:700;padding:5px 5px;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:.2px}
 .nav-btn svg{width:19px;height:19px}
 .nav-btn.active{color:var(--accentL)}
 .nav-main{background:var(--red);color:#fff;width:48px;height:48px;border-radius:50%;margin-top:-22px;box-shadow:0 4px 16px rgba(212,43,43,.5);justify-content:center}
@@ -391,6 +391,27 @@ body{overflow:hidden}
     <div id="feedMovimentacao"></div>
   </section>
 
+  <!-- HISTÓRICO -->
+  <section id="view-historico" class="view">
+    <div class="sec-hdr"><span class="sec-title">Histórico</span></div>
+    <p style="font-size:12px;color:var(--faint);margin-bottom:12px">Notas de separações já baixadas. Use a busca ou os filtros para consultar.</p>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="form-input" id="histBusca" placeholder="Buscar por nota fiscal...">
+    </div>
+    <div class="form-row" style="margin-bottom:10px">
+      <select class="form-input" id="histSetor"><option value="">Todos os setores</option></select>
+      <select class="form-input" id="histStatus"><option value="">Todos os status</option></select>
+    </div>
+    <div class="form-row" style="margin-bottom:10px">
+      <input class="form-input" id="histDe" type="date" title="De">
+      <input class="form-input" id="histAte" type="date" title="Até">
+    </div>
+    <button class="btn btn-primary" id="btnBuscarHist">Buscar</button>
+    <div id="histResultInfo" style="font-size:12px;color:var(--dim);margin:10px 0"></div>
+    <div id="listaHistorico"></div>
+  </section>
+
 </main>
 
 <nav class="bottombar">
@@ -416,6 +437,10 @@ body{overflow:hidden}
   <button class="nav-btn" data-view="movimentacao">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     <span>Feed</span>
+  </button>
+  <button class="nav-btn" data-view="historico">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14.5"/></svg>
+    <span>Histórico</span>
   </button>
 </nav>
 
@@ -445,6 +470,9 @@ body{overflow:hidden}
     <div id="listaSepsParaMover"></div>
     <button class="btn btn-secondary" id="btnCancelarMover" style="margin-top:8px">Cancelar</button>
   </div>
+</div>
+<div class="modal-ov hidden" id="modalHistorico">
+  <div class="modal-sheet"><div class="modal-handle"></div><div id="modalHistoricoContent"></div></div>
 </div>
 <div class="modal-ov hidden" id="modalResumo">
   <div class="modal-sheet">
@@ -752,7 +780,11 @@ function renderIndicadorFiltros() {
 }
 
 function renderNotas() {
-  let lista = state.notas.filter(n => n.localizacao === 'notas');
+  // Sem busca: só notas soltas (comportamento padrão, sem poluir).
+  // Com busca: também procura dentro das separações e mostra onde a nota está.
+  let lista = buscaNotas
+    ? state.notas.filter(n => n.localizacao === 'notas' || n.localizacao === 'separacao')
+    : state.notas.filter(n => n.localizacao === 'notas');
   lista = aplicarFiltrosNotas(lista);
   const el = document.getElementById('listaNotas');
   renderIndicadorFiltros();
@@ -760,7 +792,7 @@ function renderNotas() {
   const hdrSel = document.getElementById('notasSelHdr');
   if (hdrSel) hdrSel.style.display = modoSelNotas ? 'flex' : 'none';
   if (!lista.length) { el.innerHTML = empty('Nenhuma nota encontrada.'); return; }
-  el.innerHTML = lista.map(n => cardNota(n, true)).join('');
+  el.innerHTML = lista.map(n => cardNota(n, n.localizacao==='notas')).join('');
 }
 
 function cardNota(n, showMover) {
@@ -770,6 +802,11 @@ function cardNota(n, showMover) {
   if (n.peso) tags.push(`<span class="tag-mini">${esc(n.peso)} kg</span>`);
   if (n.volumes) tags.push(`<span class="tag-mini">${esc(n.volumes)} vol.</span>`);
   if (n.conferidoPor) tags.push(`<span class="tag-mini b-conf" style="color:var(--ok)">✓ ${esc(n.conferidoPor)}</span>`);
+  let locTag = '';
+  if (n.localizacao === 'separacao') {
+    const sep = state.separacoes.find(s => s.id === n.separacaoId);
+    locTag = `<div class="card-loc">📦 Localizada na separação: ${esc(sep?sep.titulo:'?')}</div>`;
+  }
   const btnConferir = n.conferidoPor ? '' : `<button class="btn btn-ok btn-sm" data-conferir-id="${esc(n.id)}" data-conferir-nf="${esc(n.notaFiscal)}">✓ Conferido</button>`;
   const btnMover = showMover ? `<button class="btn btn-secondary btn-sm" data-mover-id="${esc(n.id)}">Mover para...</button>` : '';
   const sel = modoSelNotas && notasSelecionadas.has(n.id);
@@ -778,6 +815,7 @@ function cardNota(n, showMover) {
     <div class="card-top">${chk}<span class="card-title" style="flex:1">Nota ${esc(n.notaFiscal)}</span><span data-filtro-status-tag="${esc(n.status)}" style="cursor:pointer">${badge(n.status)}</span></div>
     ${n.descricao?`<div class="card-desc">${esc(n.descricao)}</div>`:''}
     <div class="card-meta">${esc(n.conferente||'')} · ${fmtDT(n.dataHora)}${comts?` · ${comts} coment.`:''}</div>
+    ${locTag}
     ${tags.length?`<div class="card-tags">${tags.join('')}</div>`:''}
     ${!modoSelNotas&&(btnMover||btnConferir)?`<div style="margin-top:9px;display:flex;gap:7px;flex-wrap:wrap">${btnMover}${btnConferir}</div>`:''}
   </div>`;
@@ -986,12 +1024,26 @@ function abrirSeparacao(id) {
           <button class="btn btn-secondary btn-sm" data-remover-sep="${esc(n.id)}" data-remover-nf="${esc(n.notaFiscal)}">Remover</button>
         </div>
       </div>`).join(''):'<div class="card-meta" style="padding:8px 0">Nenhuma nota nesta separação.</div>'}</div>
-    <button class="btn btn-danger" id="btnExcluirSep" style="margin-top:12px">Excluir Separação</button>
+    <button class="btn btn-ok" id="btnBaixarSep" style="margin-top:12px">📥 Baixar Separação (envia p/ Histórico)</button>
+    <button class="btn btn-danger" id="btnExcluirSep">Excluir Separação</button>
     <button class="btn btn-secondary" id="btnFecharSep">Fechar</button>
   `;
   document.getElementById('modalSep').classList.remove('hidden');
 
   document.getElementById('sepModalAddBtn').onclick=()=>adicionarNotaNaSeparacao(id,document.getElementById('sepModalAddNota').value.trim(),()=>{ document.getElementById('sepModalAddNota').value=''; abrirSeparacao(id); });
+  document.getElementById('btnBaixarSep').onclick=()=>{
+    if(!confirm(`Baixar "${sep.titulo}"? As ${notas.length} nota(s) vão para o Histórico e somem da operação ativa. Nenhum dado é perdido.`))return;
+    post({acao:'baixarSeparacao',id,sepTitulo:sep.titulo,conferente:getNome()})
+      .then(()=>{
+        const idsNotas = new Set(notas.map(n=>n.id));
+        state.separacoes = state.separacoes.filter(s=>s.id!==id);
+        state.notas = state.notas.filter(n=>!idsNotas.has(n.id));
+        registrarMovLocal('separacao_baixada','',`${sep.titulo} — ${notas.length} nota(s) para o Histórico`);
+        cacheGuardar(); renderTudo(); fecharModal('modalSep');
+        banner('ok',`${notas.length} nota(s) movida(s) para o Histórico!`);
+      })
+      .catch(()=>banner('bad','Erro ao baixar separação. Tente novamente.'));
+  };
   document.getElementById('btnExcluirSep').onclick=()=>{
     if(!confirm(`Excluir "${sep.titulo}"? As notas voltam para Notas Fiscais.`))return;
     state.separacoes=state.separacoes.filter(s=>s.id!==id);
@@ -1006,21 +1058,16 @@ function adicionarNotaNaSeparacao(sepId, nf, callback) {
   if (!nf) return;
   if (!getNome()) { banner('bad','Configure seu nome primeiro.'); return; }
   const existente=state.notas.find(n=>n.notaFiscal===nf);
-  if (existente) {
-    existente.separacaoId=sepId; existente.localizacao='separacao'; existente.dataUltimaMovimentacao=new Date().toISOString();
-    cacheGuardar();
-    const sep=state.separacoes.find(s=>s.id===sepId);
-    registrarMovLocal('nota_movida',nf,'Movida para '+( sep?sep.titulo:''));
-    post({acao:'moverParaSeparacao',notaId:existente.id,separacaoId:sepId,notaFiscal:nf,conferente:getNome(),sepTitulo:sep?sep.titulo:''}).catch(()=>{});
-    banner('ok',`Nota ${nf} movida!`);
-  } else {
-    const nova={id:uid(),notaFiscal:nf,status:'',descricao:'',conferente:getNome(),dataHora:new Date().toISOString(),localizacao:'separacao',separacaoId:sepId,fotos:[],setor:'',peso:'',volumes:'',conferidoPor:'',conferidoEm:'',dataUltimaMovimentacao:new Date().toISOString()};
-    state.notas.push(nova);
-    cacheGuardar();
-    registrarMovLocal('nota_adicionada',nf,'Adicionada direto em separação');
-    post({acao:'adicionarNota',dados:{...nova,fotos:[]}}).catch(()=>{});
-    banner('ok',`Nota ${nf} adicionada!`);
+  if (!existente) {
+    banner('bad',`Nota ${nf} não encontrada. Cadastre primeiro na aba Notas.`);
+    return;
   }
+  existente.separacaoId=sepId; existente.localizacao='separacao'; existente.dataUltimaMovimentacao=new Date().toISOString();
+  cacheGuardar();
+  const sep=state.separacoes.find(s=>s.id===sepId);
+  registrarMovLocal('nota_movida',nf,'Movida para '+( sep?sep.titulo:''));
+  post({acao:'moverParaSeparacao',notaId:existente.id,separacaoId:sepId,notaFiscal:nf,conferente:getNome(),sepTitulo:sep?sep.titulo:''}).catch(()=>{});
+  banner('ok',`Nota ${nf} movida!`);
   renderTudo();
   if (callback) callback();
 }
@@ -1620,6 +1667,92 @@ document.getElementById('pwaUpdateBtn').addEventListener('click', () => {
 });
 
 initPWA();
+
+// ===== HISTÓRICO (busca sob demanda — nunca carrega nada sozinho) =====
+(function initFiltrosHistorico() {
+  const selSetor = document.getElementById('histSetor');
+  const selStatus = document.getElementById('histStatus');
+  if (!selSetor || !selStatus) return;
+  SETORES_LISTA.forEach(s => { const o=document.createElement('option'); o.value=s; o.textContent=s; selSetor.appendChild(o); });
+  Object.keys(STATUS_LABELS).forEach(s => { if(s==='') return; const o=document.createElement('option'); o.value=s; o.textContent=STATUS_LABELS[s]; selStatus.appendChild(o); });
+})();
+
+async function buscarHistorico() {
+  const busca = document.getElementById('histBusca').value.trim();
+  const setor = document.getElementById('histSetor').value;
+  const status = document.getElementById('histStatus').value;
+  const de = document.getElementById('histDe').value;
+  const ate = document.getElementById('histAte').value;
+
+  if (!busca && !setor && !status && !de && !ate) {
+    banner('bad','Digite ao menos a nota fiscal ou escolha um filtro.');
+    return;
+  }
+
+  const info = document.getElementById('histResultInfo');
+  const lista = document.getElementById('listaHistorico');
+  info.textContent = 'Buscando...';
+  lista.innerHTML = '';
+
+  const params = new URLSearchParams({ historico:'1', busca, setor, status, de, ate });
+  try {
+    const r = await fetch(`${URL_SCRIPT}?${params.toString()}`);
+    const d = await r.json();
+    const resultados = (d.historico || []).map(norm);
+    info.textContent = `${resultados.length} registro${resultados.length!==1?'s':''} encontrado${resultados.length!==1?'s':''}`;
+    if (!resultados.length) { lista.innerHTML = empty('Nenhum registro encontrado no Histórico.'); return; }
+    lista.innerHTML = resultados.map(n => `
+      <div class="card" data-hist-id="${esc(n.id)}">
+        <div class="card-top"><span class="card-title">Nota ${esc(n.notaFiscal)}</span>${badge(n.status)}</div>
+        <div class="card-meta">Baixada de "${esc(n.separacaoTitulo||'?')}" em ${fmtDT(n.dataBaixa)}</div>
+      </div>`).join('');
+    window._historicoCache = resultados; // guarda só o resultado atual, não persiste
+  } catch (e) {
+    info.textContent = '';
+    banner('bad','Erro ao buscar no Histórico. Verifique a conexão.');
+  }
+}
+
+async function abrirHistoricoDetalhe(id) {
+  const n = (window._historicoCache || []).find(x => x.id === id);
+  if (!n) return;
+  const el = document.getElementById('modalHistoricoContent');
+  el.innerHTML = `
+    <div class="modal-title">Nota ${esc(n.notaFiscal)}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px">${badge(n.status)}<span class="card-loc">📦 ${esc(n.separacaoTitulo||'?')}</span></div>
+    ${n.fotos&&n.fotos.length?`<div class="foto-row" style="margin:10px 0">${n.fotos.map(f=>`<div class="foto-thumb" data-foto-view="${esc(f)}"><img src="${esc(f)}" loading="lazy"></div>`).join('')}</div>`:''}
+    <div class="card-meta" style="margin-bottom:10px">Registrada por ${esc(n.conferente||'')} · ${fmtDT(n.dataHora)}<br>Baixada em ${fmtDT(n.dataBaixa)}${n.conferidoPor?`<br>✓ Conferida por ${esc(n.conferidoPor)}`:''}</div>
+    ${n.setor||n.peso||n.volumes?`<div class="card-tags" style="margin-bottom:10px">${n.setor?`<span class="tag-mini">${esc(n.setor)}</span>`:''}${n.peso?`<span class="tag-mini">${esc(n.peso)} kg</span>`:''}${n.volumes?`<span class="tag-mini">${esc(n.volumes)} vol.</span>`:''}</div>`:''}
+    ${n.descricao?`<div class="card-desc" style="margin-bottom:10px">${esc(n.descricao)}</div>`:''}
+    <div class="sec-hdr"><span class="sec-title">Comentários</span></div>
+    <div id="histComentarios"><div class="card-meta" style="padding:8px 0">Carregando...</div></div>
+    <button class="btn btn-secondary" id="btnFecharHist" style="margin-top:14px">Fechar</button>
+  `;
+  document.getElementById('modalHistorico').classList.remove('hidden');
+
+  try {
+    const r = await fetch(`${URL_SCRIPT}?comentariosDe=${encodeURIComponent(n.id)}`);
+    const d = await r.json();
+    const coments = (d.comentarios || []).map(normC).sort((a,b)=>new Date(a.dataHora)-new Date(b.dataHora));
+    document.getElementById('histComentarios').innerHTML = coments.length
+      ? coments.map(c=>`<div class="hist-item"><div class="hist-who">${esc(c.conferente||'')} · ${fmtDT(c.dataHora)}</div><div class="hist-txt">${esc(c.texto)}</div>${c.fotos&&c.fotos.length?`<div class="foto-row" style="margin-top:7px">${c.fotos.map(f=>`<div class="foto-thumb" data-foto-view="${esc(f)}"><img src="${esc(f)}" loading="lazy"></div>`).join('')}</div>`:''}</div>`).join('')
+      : '<div class="card-meta" style="padding:8px 0">Nenhum comentário.</div>';
+  } catch(e) {
+    document.getElementById('histComentarios').innerHTML = '<div class="card-meta" style="padding:8px 0">Erro ao carregar comentários.</div>';
+  }
+}
+
+document.getElementById('btnBuscarHist').addEventListener('click', buscarHistorico);
+document.getElementById('histBusca').addEventListener('keydown', e => { if(e.key==='Enter'){ e.preventDefault(); buscarHistorico(); } });
+document.getElementById('listaHistorico').addEventListener('click', e => {
+  const card = e.target.closest('[data-hist-id]');
+  if (card) abrirHistoricoDetalhe(card.dataset.histId);
+});
+document.getElementById('modalHistorico').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalHistorico')) fecharModal('modalHistorico');
+  if (e.target.id === 'btnFecharHist') fecharModal('modalHistorico');
+  const fv = e.target.closest('[data-foto-view]'); if (fv) abrirFoto(fv.dataset.fotoView);
+});
 
 // ===== INIT =====
 function init(){
