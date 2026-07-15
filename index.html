@@ -88,7 +88,7 @@ body{overflow:hidden}
 ::-webkit-scrollbar-thumb:hover{background:rgba(35,86,200,.45)}
 *{scrollbar-width:thin;scrollbar-color:rgba(35,86,200,.25) transparent}
 .app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:560px;margin:0 auto;position:relative;background:var(--bg);overflow:hidden}
-.app-bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(180deg,rgba(8,16,31,.05) 0%,rgba(8,16,31,.15) 55%,rgba(8,16,31,.55) 100%),var(--app-bg-photo);background-size:cover,cover;background-position:center,center top;background-repeat:no-repeat,no-repeat;pointer-events:none}
+.app-bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(180deg,rgba(8,16,31,.70) 0%,rgba(8,16,31,.70) 50%,rgba(8,16,31,0) 100%),var(--app-bg-photo);background-size:cover,cover;background-position:center,center top;background-repeat:no-repeat,no-repeat;pointer-events:none}
 .app-main{display:flex;flex-direction:column;height:100%;width:100%;position:relative;min-width:0;z-index:1}
 .icon-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--dim);cursor:pointer;flex-shrink:0}
 .icon-btn:active{background:var(--border);border-color:var(--accent)}
@@ -130,14 +130,15 @@ body{overflow:hidden}
   .app{max-width:100%;width:100%;height:100vh}
   .content{max-width:900px;margin:0 auto;padding:22px 24px 104px}
   .bottombar{max-width:900px;margin:0 auto;left:0;right:0;border-radius:14px 14px 0 0;border-left:1px solid var(--border);border-right:1px solid var(--border)}
-  .app-bg{--app-bg-photo:var(--app-bg-photo-desktop);background-position:center,center}
+  .app-bg{--app-bg-photo:var(--app-bg-photo-desktop);background-position:center,center;background-image:linear-gradient(180deg,rgba(8,16,31,.60) 0%,rgba(8,16,31,.60) 50%,rgba(8,16,31,0) 100%),var(--app-bg-photo)}
+  .theme-light .app-bg{background-image:linear-gradient(180deg,rgba(238,241,246,.72) 0%,rgba(238,241,246,.72) 50%,rgba(238,241,246,0) 100%),var(--app-bg-photo)}
 }
 .sec-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--dim)}
 .link-btn{background:none;border:none;color:var(--accentL);font-size:12.5px;font-weight:700;cursor:pointer;padding:4px 0}
 /* ===== TEMA CLARO: overrides pontuais onde a cor não vem de variável ===== */
 .theme-light .topbar{background:rgba(255,255,255,.92)}
 .theme-light .bottombar{background:rgba(255,255,255,.92)}
-.theme-light .app-bg{background-image:linear-gradient(180deg,rgba(238,241,246,.05) 0%,rgba(238,241,246,.15) 55%,rgba(238,241,246,.55) 100%),var(--app-bg-photo);background-size:cover,cover;background-position:center,center top;background-repeat:no-repeat,no-repeat}
+.theme-light .app-bg{background-image:linear-gradient(180deg,rgba(238,241,246,.78) 0%,rgba(238,241,246,.78) 50%,rgba(238,241,246,0) 100%),var(--app-bg-photo);background-size:cover,cover;background-position:center,center top;background-repeat:no-repeat,no-repeat}
 .theme-light .drawer{box-shadow:2px 0 12px rgba(0,0,0,.06)}
 .theme-light .modal-sheet{box-shadow:0 -4px 24px rgba(0,0,0,.10)}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:9px;cursor:pointer;border-left:3px solid transparent;transition:border-left-color .15s}
@@ -506,6 +507,18 @@ body{overflow:hidden}
         <label class="form-label">Volumes (opcional)</label>
         <input class="form-input" id="rVolumes" inputmode="numeric" enterkeyhint="go" placeholder="Ex: 5">
       </div>
+      <!-- Campo condicional: Agendamento -->
+      <div class="form-group cond-field" id="rGrpDataAgendada" style="display:none">
+        <label class="form-label">Data Agendada</label>
+        <input class="form-input" id="rDataAgendada" type="date">
+      </div>
+      <!-- Campos condicionais: Extravio -->
+      <div class="form-group cond-field" id="rGrpExtravio" style="display:none">
+        <label class="form-label">Volume Total da Nota</label>
+        <input class="form-input" id="rVolumeTotal" inputmode="numeric" enterkeyhint="go" placeholder="Ex: 10">
+        <label class="form-label" style="margin-top:10px">Volumes Faltando</label>
+        <input class="form-input" id="rVolumesFaltando" inputmode="numeric" enterkeyhint="go" placeholder="Ex: 2">
+      </div>
       <div class="form-group">
         <label class="form-label">Fotos</label>
         <button type="button" class="btn btn-secondary" id="btnFotoNota" style="margin-bottom:0">Adicionar Fotos</button>
@@ -718,8 +731,8 @@ const NOME_KEY  = 'risso_nome';
 const SYNC_MS   = 25000;
 const DIAS_PRIO = 5;
 
-const STATUS_LABELS  = { '':'Armazém', bloqueada:'Bloqueada', extravio:'Extravio', avaria:'Avaria', sobra:'Sobra', pendencia:'Pendência', agendamento:'Agendamento', performance:'Performance' };
-const STATUS_CLASSES = { '':'b-ok', bloqueada:'b-crit', extravio:'b-crit', avaria:'b-crit', sobra:'b-ok', pendencia:'b-warn', agendamento:'b-warn', performance:'b-info' };
+const STATUS_LABELS  = { '':'Armazém', bloqueada:'Bloqueada', extravio:'Extravio', avaria:'Avaria', sobra:'Sobra', pendencia:'Pendência', agendamento:'Agendamento', performance:'Performance', extravioLocalizado:'Extravio Localizado' };
+const STATUS_CLASSES = { '':'b-ok', bloqueada:'b-crit', extravio:'b-crit', avaria:'b-crit', sobra:'b-ok', pendencia:'b-warn', agendamento:'b-warn', performance:'b-info', extravioLocalizado:'b-ok' };
 const MOV_CORES      = { nota_adicionada:'var(--ok)', comentario:'var(--info)', nota_movida:'var(--accent)', conferida:'var(--ok)', separacao_criada:'var(--purple)', nota_excluida:'var(--bad)', nota_removida_sep:'var(--warn)' };
 const MOV_LABELS     = { nota_adicionada:'Adicionou nota', comentario:'Comentou em nota', nota_movida:'Moveu nota', conferida:'Conferiu nota', separacao_criada:'Criou separação', nota_excluida:'Excluiu nota', nota_removida_sep:'Removeu nota de separação' };
 
@@ -765,8 +778,13 @@ function fmtDrive(url) { if(!url) return url; const m=String(url).match(/[-\w]{2
 
 function norm(o) {
   const r=Object.assign({},o);
-  ['id','notaFiscal','descricao','conferente','localizacao','separacaoId','setor','peso','volumes','conferidoPor','conferidoEm','dataUltimaMovimentacao'].forEach(k=>r[k]=String(r[k]||''));
-  r.status = String(r.status||'').toLowerCase();
+  ['id','notaFiscal','descricao','conferente','localizacao','separacaoId','setor','peso','volumes',
+   'conferidoPor','conferidoEm','dataUltimaMovimentacao',
+   'dataAgendada','volumeTotal','volumesFaltando','volRecuperados'].forEach(k=>r[k]=String(r[k]||''));
+  r.extravioLocalizado = r.extravioLocalizado === true || r.extravioLocalizado === 'true' || r.extravioLocalizado === '1';
+  // status visual: se extravioLocalizado e status vazio, exibe como 'extravioLocalizado'
+  r.statusReal = String(r.status||'').toLowerCase();
+  r.status = r.extravioLocalizado && r.statusReal==='' ? 'extravioLocalizado' : r.statusReal;
   r.localizacao = r.localizacao || 'notas';
   if (!Array.isArray(r.fotos)) r.fotos = r.fotos ? String(r.fotos).split('|').filter(Boolean) : [];
   r.fotos = r.fotos.map(fmtDrive);
@@ -1097,8 +1115,29 @@ function abrirNota(id) {
 
     <div class="sec-hdr"><span class="sec-title">Status / Categoria</span></div>
     <div class="status-grid" id="editStatusGrid">
-      ${['bloqueada','extravio','avaria','sobra','pendencia','agendamento','performance'].map(s=>`<button type="button" class="status-pill ${n.status===s?'active':''}" data-es="${s}">${STATUS_LABELS[s]}</button>`).join('')}
+      ${['bloqueada','extravio','avaria','sobra','pendencia','agendamento','performance'].map(s=>`<button type="button" class="status-pill ${n.statusReal===s?'active':''}" data-es="${s}">${STATUS_LABELS[s]}</button>`).join('')}
     </div>
+
+    ${n.statusReal==='agendamento'?`
+    <div class="form-group" id="editGrpAgendamento" style="margin-top:14px">
+      <label class="form-label">Data Agendada</label>
+      <input class="form-input" id="editDataAgendada" type="date" value="${esc(n.dataAgendada)}">
+    </div>`:`<div id="editGrpAgendamento" style="display:none"><input id="editDataAgendada" value="${esc(n.dataAgendada)}"></div>`}
+
+    ${n.statusReal==='extravio'?`
+    <div id="editGrpExtravio" style="margin-top:14px">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Volume Total</label><input class="form-input" id="editVolumeTotal" inputmode="numeric" value="${esc(n.volumeTotal)}"></div>
+        <div class="form-group"><label class="form-label">Volumes Faltando</label><input class="form-input" id="editVolumesFaltando" inputmode="numeric" value="${esc(n.volumesFaltando)}"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Volumes Recuperados até agora: ${esc(n.volRecuperados||'0')}</label>
+        <div style="display:flex;gap:7px">
+          <input class="form-input" id="editVolRecuperar" inputmode="numeric" placeholder="Qtd. localizados agora" style="flex:1">
+          <button class="btn btn-ok btn-sm" id="btnRegistrarRecuperacao" style="flex-shrink:0">Registrar</button>
+        </div>
+      </div>
+    </div>`:`<div id="editGrpExtravio" style="display:none"><input id="editVolumeTotal" value="${esc(n.volumeTotal)}"><input id="editVolumesFaltando" value="${esc(n.volumesFaltando)}"><input id="editVolRecuperar" value=""></div>`}
 
     <div class="sec-hdr" style="margin-top:18px"><span class="sec-title">Detalhes</span></div>
     <div class="form-row">
@@ -1136,18 +1175,57 @@ function abrirNota(id) {
     const novoStatus=jaAtivo?'':btn.dataset.es;
     if (!jaAtivo) btn.classList.add('active');
     const agora=new Date().toISOString();
-    atualizarNotaLocal(id,{status:novoStatus,dataUltimaMovimentacao:agora});
-    post({acao:'atualizarNota',id,notaFiscal:n.notaFiscal,conferente:getNome(),campos:{status:novoStatus,dataUltimaMovimentacao:agora},movTipo:'status_alterado',movDetalhe:'Status: '+( STATUS_LABELS[novoStatus]||novoStatus)}).catch(()=>{});
+    // mostra/esconde campos condicionais no modal ao mudar status
+    document.getElementById('editGrpAgendamento').style.display = novoStatus==='agendamento' ? '' : 'none';
+    document.getElementById('editGrpExtravio').style.display    = novoStatus==='extravio'    ? '' : 'none';
+    atualizarNotaLocal(id,{status:novoStatus,statusReal:novoStatus,extravioLocalizado:false,dataUltimaMovimentacao:agora});
+    post({acao:'atualizarNota',id,notaFiscal:n.notaFiscal,conferente:getNome(),campos:{status:novoStatus,extravioLocalizado:'false',dataUltimaMovimentacao:agora},movTipo:'status_alterado',movDetalhe:'Status: '+(STATUS_LABELS[novoStatus]||novoStatus)}).catch(()=>{});
     banner('ok','Status atualizado!');
   });
 
-  // salvar detalhes
+  // salvar detalhes (inclui campos condicionais)
   document.getElementById('btnSalvarDetalhes').onclick=()=>{
     const agora=new Date().toISOString();
-    const campos={setor:document.getElementById('editSetor').value.trim(),peso:document.getElementById('editPeso').value.trim(),volumes:document.getElementById('editVolumes').value.trim(),descricao:document.getElementById('editDescricao').value.trim(),dataUltimaMovimentacao:agora};
+    const campos={
+      setor:document.getElementById('editSetor').value,
+      peso:document.getElementById('editPeso').value.trim(),
+      volumes:document.getElementById('editVolumes').value.trim(),
+      descricao:document.getElementById('editDescricao').value.trim(),
+      dataUltimaMovimentacao:agora,
+      dataAgendada:document.getElementById('editDataAgendada').value,
+      volumeTotal:document.getElementById('editVolumeTotal').value.trim(),
+      volumesFaltando:document.getElementById('editVolumesFaltando').value.trim()
+    };
     atualizarNotaLocal(id,campos);
     post({acao:'atualizarNota',id,notaFiscal:n.notaFiscal,conferente:getNome(),campos,movTipo:'detalhes_editados',movDetalhe:'Detalhes atualizados'}).catch(()=>{});
     banner('ok','Detalhes salvos!');
+  };
+
+  // recuperação de extravio
+  const btnRec=document.getElementById('btnRegistrarRecuperacao');
+  if (btnRec) btnRec.onclick=()=>{
+    const qtd=parseInt(document.getElementById('editVolRecuperar').value)||0;
+    if (!qtd||qtd<1){banner('bad','Informe a quantidade localizada.');return;}
+    const total=parseInt(n.volumeTotal)||0;
+    const faltavam=parseInt(n.volumesFaltando)||0;
+    const jaRecuperados=parseInt(n.volRecuperados)||0;
+    const novoRecuperados=jaRecuperados+qtd;
+    const novoFaltando=Math.max(0,faltavam-qtd);
+    const agora=new Date().toISOString();
+    if (novoRecuperados>=total||novoFaltando===0) {
+      if (confirm('Todos os volumes foram localizados.\nRemover ocorrência de extravio? (Sim = Marcar como Armazém)')) {
+        const campos={status:'',statusReal:'',extravioLocalizado:'true',volRecuperados:String(novoRecuperados),volumesFaltando:'0',dataUltimaMovimentacao:agora};
+        atualizarNotaLocal(id,{...campos,extravioLocalizado:true,status:'extravioLocalizado',statusReal:''});
+        post({acao:'atualizarNota',id,notaFiscal:n.notaFiscal,conferente:getNome(),campos,movTipo:'extravio_localizado',movDetalhe:`${novoRecuperados} vol. recuperados — extravio removido`}).catch(()=>{});
+        banner('ok','Extravio localizado! Nota marcada como Armazém.');
+        fecharModal('modalNota'); renderTudo(); return;
+      }
+    }
+    const campos={volRecuperados:String(novoRecuperados),volumesFaltando:String(novoFaltando),dataUltimaMovimentacao:agora};
+    atualizarNotaLocal(id,campos);
+    post({acao:'atualizarNota',id,notaFiscal:n.notaFiscal,conferente:getNome(),campos,movTipo:'recuperacao_parcial',movDetalhe:`${qtd} vol. localizados (total: ${novoRecuperados}/${total})`}).catch(()=>{});
+    banner('ok',`${qtd} volume(s) registrado(s). Faltam ${novoFaltando}.`);
+    fecharModal('modalNota'); abrirNota(id);
   };
 
   // conferir no modal
@@ -1420,6 +1498,19 @@ function gerarTextoResumo(de,ate,secoes) {
     txt+='\n';
   }
 
+  // Extravios localizados
+  const extraviosLoc = todasNotas.filter(n => n.extravioLocalizado);
+  if (extraviosLoc.length) {
+    txt += '📦 EXTRAVIOS LOCALIZADOS\n';
+    txt += '───────────────────────────────────────────────\n';
+    extraviosLoc.forEach(n => {
+      const rec = n.volRecuperados || '0';
+      const total = n.volumeTotal || '?';
+      txt += `  • Nota ${n.notaFiscal}${n.setor?' | '+n.setor:''} | ${rec}/${total} vol. recuperados\n`;
+    });
+    txt += '\n';
+  }
+
   if (secoes.perf) {
     txt+='👤 PERFORMANCE POR COLABORADOR\n';
     txt+='───────────────────────────────────────────────\n';
@@ -1522,6 +1613,16 @@ function gerarRelatorioHTML(de, ate, secoes) {
         h += `<div class="rel-item warn"><div class="rel-item-tit">Nota ${esc(n.notaFiscal)}</div><div class="rel-item-meta">${n.setor?esc(n.setor)+' · ':''}${dias} dias sem movimentação</div></div>`;
       });
     } else { h += `<div class="rel-empty">Nenhuma nota em prioridade.</div>`; }
+    h += `</div>`;
+  }
+
+  // Extravios localizados — sempre mostra se existirem
+  const extraviosLocRel = todasNotas.filter(n => n.extravioLocalizado);
+  if (extraviosLocRel.length) {
+    h += `<div class="rel-sec"><div class="rel-sec-tit">Extravios Localizados</div>`;
+    extraviosLocRel.forEach(n => {
+      h += `<div class="rel-item ok"><div class="rel-item-tit">Nota ${esc(n.notaFiscal)}</div><div class="rel-item-meta">${n.setor?esc(n.setor)+' · ':''}${esc(n.volRecuperados||'0')}/${esc(n.volumeTotal||'?')} vol. recuperados</div></div>`;
+    });
     h += `</div>`;
   }
 
@@ -1630,12 +1731,17 @@ document.getElementById('rSetor').addEventListener('change', () => {
   document.getElementById('rSetorCodigo').style.borderColor = '';
 });
 
+function atualizarCamposCondicionaisForm(status) {
+  document.getElementById('rGrpDataAgendada').style.display = status==='agendamento' ? '' : 'none';
+  document.getElementById('rGrpExtravio').style.display     = status==='extravio'    ? '' : 'none';
+}
 document.getElementById('statusGrid').addEventListener('click', e=>{
   const btn=e.target.closest('[data-s]'); if(!btn) return;
   const jaAtivo=btn.classList.contains('active');
   document.querySelectorAll('#statusGrid .status-pill').forEach(b=>b.classList.remove('active'));
   statusAtual=jaAtivo?'':btn.dataset.s;
   if (!jaAtivo) btn.classList.add('active');
+  atualizarCamposCondicionaisForm(statusAtual);
 });
 
 document.getElementById('btnFotoNota').addEventListener('click',()=>document.getElementById('inputFotoNota').click());
@@ -1661,13 +1767,17 @@ document.getElementById('formNota').addEventListener('submit', e=>{
   const existe=state.notas.find(n=>n.notaFiscal===nf);
   if (existe){mostrarPopupNota(existe);return;}
   const agora=new Date().toISOString();
-  const nova={id:uid(),notaFiscal:nf,status:statusAtual,descricao:document.getElementById('rDesc').value.trim(),conferente:getNome(),dataHora:agora,localizacao:'notas',separacaoId:'',fotos:[],setor:document.getElementById('rSetor').value,peso:document.getElementById('rPeso').value.trim(),volumes:document.getElementById('rVolumes').value.trim(),conferidoPor:'',conferidoEm:'',dataUltimaMovimentacao:agora};
+  const nova={id:uid(),notaFiscal:nf,status:statusAtual,descricao:document.getElementById('rDesc').value.trim(),conferente:getNome(),dataHora:agora,localizacao:'notas',separacaoId:'',fotos:[],setor:document.getElementById('rSetor').value,peso:document.getElementById('rPeso').value.trim(),volumes:document.getElementById('rVolumes').value.trim(),conferidoPor:'',conferidoEm:'',dataUltimaMovimentacao:agora,dataAgendada:statusAtual==='agendamento'?document.getElementById('rDataAgendada').value:'',volumeTotal:statusAtual==='extravio'?document.getElementById('rVolumeTotal').value.trim():'',volumesFaltando:statusAtual==='extravio'?document.getElementById('rVolumesFaltando').value.trim():'',volRecuperados:'',extravioLocalizado:false};
   state.notas.push(nova);
   registrarMovLocal('nota_adicionada',nf,'Status: '+(STATUS_LABELS[statusAtual]||'Armazém'));
   cacheGuardar(); renderTudo(); banner('ok',`Nota ${nf} registrada!`);
   post({acao:'adicionarNota',dados:{...nova,fotos:fotosPend}}).catch(()=>{});
   e.target.reset(); statusAtual=''; fotosPend=[];
   document.getElementById('rSetorCodigo').value='';
+  document.getElementById('rDataAgendada').value='';
+  document.getElementById('rVolumeTotal').value='';
+  document.getElementById('rVolumesFaltando').value='';
+  atualizarCamposCondicionaisForm('');
   document.getElementById('rSetorCodigo').style.borderColor='';
   document.getElementById('rSetor').value='';
   document.querySelectorAll('#statusGrid .status-pill').forEach(b=>b.classList.remove('active'));
@@ -2078,12 +2188,28 @@ async function abrirHistoricoDetalhe(id) {
     ${n.descricao?`<div class="card-desc" style="margin-bottom:10px">${esc(n.descricao)}</div>`:''}
     <div class="sec-hdr"><span class="sec-title">Comentários</span></div>
     <div id="histComentarios"><div class="card-meta" style="padding:8px 0">Carregando...</div></div>
-    <button class="btn btn-secondary" id="btnFecharHist" style="margin-top:14px">Fechar</button>
+    <button class="btn btn-ok" id="btnRestaurarHist" style="margin-top:14px">↩ Restaurar para Notas Ativas</button>
+    <button class="btn btn-secondary" id="btnFecharHist" style="margin-top:6px">Fechar</button>
   `;
   document.getElementById('modalHistorico').classList.remove('hidden');
 
+  document.getElementById('btnRestaurarHist').onclick = async () => {
+    if (!confirm('Restaurar a nota ' + n.notaFiscal + ' para a lista de notas ativas?')) return;
+    try {
+      await post({ acao: 'restaurarDoHistorico', id: n.id, conferente: getNome() });
+      window._historicoCache = (window._historicoCache||[]).filter(x=>x.id!==n.id);
+      const cardHist = document.querySelector('[data-hist-id="' + n.id + '"]');
+      if (cardHist) cardHist.remove();
+      fecharModal('modalHistorico');
+      banner('ok', 'Nota ' + n.notaFiscal + ' restaurada para Notas Fiscais!');
+      carregarDados(false);
+    } catch(e) {
+      banner('bad', 'Erro ao restaurar. Tente novamente.');
+    }
+  };
+
   try {
-    const r = await fetch(`${URL_SCRIPT}?comentariosDe=${encodeURIComponent(n.id)}`);
+    const r = await fetch(URL_SCRIPT + '?comentariosDe=' + encodeURIComponent(n.id));
     const d = await r.json();
     const coments = (d.comentarios || []).map(normC).sort((a,b)=>new Date(a.dataHora)-new Date(b.dataHora));
     document.getElementById('histComentarios').innerHTML = coments.length
