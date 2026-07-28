@@ -265,6 +265,32 @@ body{overflow:hidden}
 .pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:6px}
 /* MOVIMENTAÇÃO FEED */
 .feed-user{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:9px;overflow:hidden;border-left:3px solid var(--accent)}
+/* ===== INVENTÁRIO ===== */
+.inv-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:9px;overflow:hidden}
+.inv-card-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;gap:8px}
+.inv-card-hdr:active{background:var(--surface2)}
+.inv-card-titulo{font-size:14px;font-weight:800;flex:1}
+.inv-card-meta{font-size:11.5px;color:var(--faint)}
+.inv-card-badge{display:flex;align-items:center;gap:8px}
+.inv-card-cnt{font-size:12px;font-weight:700;color:var(--accentL)}
+.inv-enc{border-left:3px solid var(--faint)!important}
+.inv-enc .inv-card-titulo{color:var(--dim)}
+.inv-body{display:none;border-top:1px solid var(--border)}
+.inv-body.open{display:block}
+.inv-setor-card{border-bottom:1px solid var(--border);padding:0}
+.inv-setor-card:last-child{border-bottom:none}
+.inv-setor-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;gap:8px}
+.inv-setor-hdr:active{background:var(--surface2)}
+.inv-setor-nome{font-size:13px;font-weight:700;flex:1}
+.inv-setor-cnt{font-size:11.5px;color:var(--accentL);font-weight:700}
+.inv-setor-body{display:none;padding:0 14px 10px;background:var(--surface2)}
+.inv-setor-body.open{display:block}
+.inv-nota-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.inv-nota-row:last-child{border-bottom:none}
+.inv-nota-nf{font-size:13.5px;font-weight:700;flex:1}
+.inv-nota-info{font-size:11.5px;color:var(--faint)}
+.inv-buscares{background:var(--surface2);border:1px solid var(--accentL);border-radius:var(--rs);padding:10px 13px;margin-bottom:4px;font-size:13px}
+.inv-buscares strong{color:var(--accentL)}
 .feed-user-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}
 .feed-user-hdr:active{background:var(--surface2)}
 .feed-user-name{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}
@@ -357,9 +383,9 @@ body{overflow:hidden}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     <span>Movimentação</span>
   </button>
-  <button class="nav-btn drawer-item" data-view="historico">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14.5"/></svg>
-    <span>Histórico</span>
+  <button class="nav-btn drawer-item" data-view="inventario">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+    <span>Inventários</span>
   </button>
   <div style="height:1px;background:var(--border);margin:10px 4px"></div>
   <button class="drawer-item" id="drawerResumo">
@@ -410,7 +436,7 @@ body{overflow:hidden}
   <!-- NOTAS FISCAIS -->
   <section id="view-notas" class="view">
     <div class="sec-hdr">
-      <span class="sec-title">Notas Fiscais</span>
+      <span class="sec-title">Inventário</span>
       <button class="link-btn" id="btnToggleSel">Selecionar</button>
     </div>
     <!-- Barra de seleção múltipla -->
@@ -543,7 +569,24 @@ body{overflow:hidden}
     <div id="listaPrioridade"></div>
   </section>
 
+  <!-- INVENTÁRIO -->
+  <section id="view-inventario" class="view">
+    <div class="sec-hdr">
+      <span class="sec-title">Inventários</span>
+      <button class="link-btn" id="btnNovoInventario">+ Novo</button>
+    </div>
+    <!-- Pesquisa global de nota em inventários -->
+    <div class="search-wrap" style="margin-bottom:10px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="form-input" id="invBuscaNota" placeholder="Buscar nota fiscal em todos os inventários...">
+    </div>
+    <div id="invBuscaResultado" style="margin-bottom:12px"></div>
+    <!-- Lista de inventários -->
+    <div id="listaInventarios"></div>
+  </section>
+
   <!-- MOVIMENTAÇÃO -->
+
   <section id="view-movimentacao" class="view">
     <div class="sec-hdr">
       <span class="sec-title">Movimentação do Dia</span>
@@ -580,8 +623,8 @@ body{overflow:hidden}
     <span>Painel</span>
   </button>
   <button class="nav-btn" data-view="notas">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-    <span>Notas</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+    <span>Inventário</span>
   </button>
   <button class="nav-btn nav-main" data-view="registrar">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -628,6 +671,58 @@ body{overflow:hidden}
     <button class="btn btn-secondary" id="btnFecharConfig">Fechar</button>
   </div>
 </div>
+<!-- Modal: adicionar/editar nota no inventário -->
+<div class="modal-ov hidden" id="modalInvNota">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalInvNotaTitulo">Adicionar ao Inventário</div>
+    <div class="modal-sub" id="modalInvNotaSub"></div>
+    <div class="form-group">
+      <label class="form-label">Nota Fiscal</label>
+      <input class="form-input" id="invNF" placeholder="Ex: 966" inputmode="numeric" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Volumes (opcional)</label>
+      <input class="form-input" id="invVolumes" inputmode="numeric" placeholder="Ex: 5">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status / Ocorrência (opcional)</label>
+      <div class="status-grid" id="invStatusGrid">
+        <button type="button" class="status-pill" data-inv-s="bloqueada">Bloqueada</button>
+        <button type="button" class="status-pill" data-inv-s="extravio">Extravio</button>
+        <button type="button" class="status-pill" data-inv-s="avaria">Avaria</button>
+        <button type="button" class="status-pill" data-inv-s="sobra">Sobra</button>
+        <button type="button" class="status-pill" data-inv-s="pendencia">Pendência</button>
+        <button type="button" class="status-pill" data-inv-s="agendamento">Agendamento</button>
+        <button type="button" class="status-pill" data-inv-s="performance">Performance</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Foto (opcional)</label>
+      <button type="button" class="btn btn-secondary btn-sm" id="btnInvFoto" style="margin-bottom:0">Adicionar Foto</button>
+      <input type="file" id="inputInvFoto" accept="image/*" multiple style="display:none">
+      <div class="foto-row" id="thumbsInvNota"></div>
+    </div>
+    <button class="btn btn-primary" id="btnSalvarInvNota">Salvar</button>
+    <button class="btn btn-secondary" id="btnFecharInvNota">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal: senha de administrador -->
+<div class="modal-ov hidden" id="modalSenhaAdm">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Inventário Encerrado</div>
+    <div class="modal-sub">Este inventário foi encerrado. Digite a senha de administrador para reabrir.</div>
+    <div class="form-group">
+      <label class="form-label">Senha</label>
+      <input class="form-input" id="inputSenhaAdm" type="password" placeholder="Digite a senha">
+    </div>
+    <button class="btn btn-primary" id="btnConfirmarSenhaAdm">Confirmar</button>
+    <button class="btn btn-secondary" id="btnCancelarSenhaAdm">Cancelar</button>
+  </div>
+</div>
+
 <div class="modal-ov hidden" id="modalEscolherSep">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -753,7 +848,7 @@ const ROTAS = Object.keys(SETOR_MAP).sort((a,b)=>Number(a)-Number(b)).map(cod =>
   setor: SETOR_MAP[cod],
   dias: DIAS_POR_SETOR[cod] || [0,1,2,3,4,5,6]
 }));
-let state = { notas:[], comentarios:[], separacoes:[], chegadas:[], movimentos:[] };
+let state = { notas:[], comentarios:[], separacoes:[], chegadas:[], movimentos:[], inventarios:[], invNotas:[] };
 let syncing = false;
 let filtroNotas = 'todas';
 let filtroGaiolas = 'hoje';
@@ -801,6 +896,14 @@ function normC(c) {
 function normS(s) { const r=Object.assign({},s); ['id','titulo','conferente'].forEach(k=>r[k]=String(r[k]||'')); return r; }
 function normG(o) { const r=Object.assign({},o); r.id=String(r.id||''); r.codigo=String(r.codigo||''); return r; }
 function normM(m) { const r=Object.assign({},m); ['id','tipo','notaFiscal','conferente','detalhe'].forEach(k=>r[k]=String(r[k]||'')); return r; }
+function normInv(i) { const r=Object.assign({},i); ['id','titulo','conferente','dataHora'].forEach(k=>r[k]=String(r[k]||'')); r.encerrado = r.encerrado==='true'||r.encerrado===true; return r; }
+function normInvNota(n) {
+  const r=Object.assign({},n);
+  ['id','inventarioId','notaFiscal','setor','volumes','status','conferente','dataHora'].forEach(k=>r[k]=String(r[k]||''));
+  if (!Array.isArray(r.fotos)) r.fotos = r.fotos ? String(r.fotos).split('|').filter(Boolean) : [];
+  r.fotos = r.fotos.map(fmtDrive);
+  return r;
+}
 
 function cacheGuardar() { try { localStorage.setItem(CACHE_KEY, JSON.stringify(state)); } catch(e) {} }
 function cacheCarregar() {
@@ -812,6 +915,8 @@ function cacheCarregar() {
       state.separacoes  = (r.separacoes||[]).map(normS);
       state.chegadas    = (r.chegadas||[]).map(normG);
       state.movimentos  = (r.movimentos||[]).map(normM);
+      state.inventarios = (r.inventarios||[]).map(normInv);
+      state.invNotas    = (r.invNotas||[]).map(normInvNota);
     }
   } catch(e) {}
 }
@@ -846,6 +951,8 @@ async function carregarDados(mostrarErro=true) {
     state.separacoes  = (d.separacoes||[]).map(normS);
     state.chegadas    = (d.chegadas||[]).map(normG);
     state.movimentos  = (d.movimentos||[]).map(normM);
+    state.inventarios = (d.inventarios||[]).map(normInv);
+    state.invNotas    = (d.invNotas||[]).map(normInvNota);
     cacheGuardar(); marcarSync(true); renderTudo();
   } catch(e) { marcarSync(false); if (mostrarErro) banner('bad','Sem conexão. Mostrando dados salvos.'); }
   finally { syncing=false; }
@@ -881,6 +988,20 @@ function badge(status) {
   return `<span class="badge ${cls}">${lbl}</span>`;
 }
 
+function ehPrioridadeInv() {
+  // pega os 3 inventários mais recentes (qualquer status)
+  const invOrdem = [...state.inventarios].sort((a,b)=>new Date(b.dataHora)-new Date(a.dataHora));
+  const ultimos3 = invOrdem.slice(0, 3);
+  if (ultimos3.length < 3) return [];
+  // notas que aparecem nos 3
+  const notasP1 = state.invNotas.filter(n=>n.inventarioId===ultimos3[0].id).map(n=>n.notaFiscal);
+  const notasP2 = state.invNotas.filter(n=>n.inventarioId===ultimos3[1].id).map(n=>n.notaFiscal);
+  const notasP3 = state.invNotas.filter(n=>n.inventarioId===ultimos3[2].id).map(n=>n.notaFiscal);
+  const em3 = notasP1.filter(nf=>notasP2.includes(nf)&&notasP3.includes(nf));
+  // retorna as invNotas do inventário mais recente que estão em prioridade
+  return state.invNotas.filter(n=>n.inventarioId===ultimos3[0].id && em3.includes(n.notaFiscal));
+}
+// mantém compatibilidade com código antigo que usa ehPrioridade
 function ehPrioridade(n) {
   if (!['', 'sobra', 'avaria'].includes(n.status)) return false;
   const ref = n.dataUltimaMovimentacao || n.dataHora;
@@ -908,33 +1029,36 @@ function copiarFallback(texto) {
 // ===== RENDER =====
 function renderTudo() {
   renderPainel(); renderNotas(); renderSeparacoes();
-  renderPrioridade(); renderMovimentacao(); renderDatalistNotas();
+  renderPrioridade(); renderMovimentacao(); renderDatalistNotas(); renderInventarios();
 }
 
 function renderPainel() {
-  const notas=state.notas;
-  const total=notas.length;
+  // inventário mais recente (não encerrado preferencialmente, senão o mais recente)
+  const invOrdem = [...state.inventarios].sort((a,b)=>new Date(b.dataHora)-new Date(a.dataHora));
+  const invAtivo = invOrdem.find(i=>!invEncerradoAutomatico(i)) || invOrdem[0];
+  const notasInv = invAtivo ? state.invNotas.filter(n=>n.inventarioId===invAtivo.id) : [];
 
-  const conferidas = notas.filter(n=>n.conferidoPor).length;
-  const prio = notas.filter(ehPrioridade).length;
+  const prio = ehPrioridadeInv();
   document.getElementById('tallyStrip').innerHTML = `
-    <div class="tally-item"><div class="tally-num">${total}</div><div class="tally-lbl">Notas ativas</div></div>
-    <div class="tally-item"><div class="tally-num">${conferidas}</div><div class="tally-lbl">Conferidas</div></div>
+    <div class="tally-item"><div class="tally-num">${notasInv.length}</div><div class="tally-lbl">${invAtivo?invAtivo.titulo.replace('Inventário ',''):'Sem inv.'}</div></div>
+    <div class="tally-item"><div class="tally-num">${notasInv.filter(n=>n.status==='').length}</div><div class="tally-lbl">Armazém</div></div>
     <div class="tally-item"><div class="tally-num">${state.separacoes.length}</div><div class="tally-lbl">Separações</div></div>
-    <div class="tally-item"><div class="tally-num">${prio}</div><div class="tally-lbl">Prioridade</div></div>
+    <div class="tally-item"><div class="tally-num">${prio.length}</div><div class="tally-lbl">Prioridade</div></div>
   `;
 
+  // contadores de ocorrência baseados no inventário atual
   const statusOrdem=['','bloqueada','extravio','avaria','sobra','pendencia','agendamento','performance'];
   document.getElementById('statGridPainel').innerHTML = statusOrdem.map(s=>{
-    const count=notas.filter(n=>n.status===s).length;
+    const count=notasInv.filter(n=>n.status===s).length;
     return `<div class="stat-card" style="cursor:pointer" data-filtro-status="${s}" title="Filtrar por ${STATUS_LABELS[s]}"><span class="stat-val">${count}</span><span class="stat-lbl">${STATUS_LABELS[s]}</span></div>`;
   }).join('');
 
+  // rotas de hoje com contagem do inventário atual
   const hoje=new Date().getDay();
   const rotasOrd=[...ROTAS].sort((a,b)=>(b.dias.includes(hoje)?1:0)-(a.dias.includes(hoje)?1:0));
   document.getElementById('rotasHoje').innerHTML = rotasOrd.map(r=>{
     const sai=r.dias.includes(hoje);
-    const qtd=notas.filter(n=>n.setor===r.setor).length;
+    const qtd=notasInv.filter(n=>n.setor===r.setor).length;
     return `<div class="card" data-filtro-setor-rota="${esc(r.setor)}" style="cursor:pointer"><div class="rota-row"><span style="font-size:13.5px;font-weight:600">${sai?'<span class="pulse-dot"></span>':''}${esc(r.setor)}${qtd?` <span style="color:var(--dim);font-weight:400">(${qtd})</span>`:''}</span><span class="badge ${sai?'b-ok':'b-none'}">${sai?'Sai hoje':'Não hoje'}</span></div></div>`;
   }).join('');
 }
@@ -1053,11 +1177,16 @@ function renderSeparacoes() {
 }
 
 function renderPrioridade() {
-  const lista=state.notas.filter(ehPrioridade);
-  document.getElementById('prioCnt').textContent=lista.length?`${lista.length} nota${lista.length>1?'s':''}`:'' ;
-  const el=document.getElementById('listaPrioridade');
-  if (!lista.length) { el.innerHTML=empty('Nenhuma nota em prioridade no momento.'); return; }
-  el.innerHTML=lista.map(n=>cardNota(n,true)).join('');
+  const lista = ehPrioridadeInv();
+  document.getElementById('prioCnt').textContent = lista.length ? `${lista.length} nota${lista.length>1?'s':''}` : '';
+  const el = document.getElementById('listaPrioridade');
+  if (!lista.length) { el.innerHTML = empty('Nenhuma nota em prioridade no momento.<br><small style="color:var(--faint)">Notas que aparecem em 3 inventários seguidos entram aqui automaticamente.</small>'); return; }
+  el.innerHTML = lista.map(n => `
+    <div class="card">
+      <div class="card-top"><span class="card-title" style="flex:1">Nota ${esc(n.notaFiscal)}</span>${n.status?badge(n.status):badge('')}</div>
+      <div class="card-meta">${esc(n.setor||'—')} · ${esc(n.conferente||'')} · ${fmtDT(n.dataHora)}</div>
+      ${n.volumes?`<div class="card-tags"><span class="tag-mini">${esc(n.volumes)} vol.</span></div>`:''}
+    </div>`).join('');
 }
 
 function renderMovimentacao() {
@@ -1993,9 +2122,21 @@ document.getElementById('statGridPainel').addEventListener('click', e => {
 document.getElementById('rotasHoje').addEventListener('click', e => {
   const card = e.target.closest('[data-filtro-setor-rota]');
   if (!card) return;
-  filtroSetorCombo = card.dataset.filtroSetorRota;
-  trocarView('notas');
-  renderNotas();
+  const setor = card.dataset.filtroSetorRota;
+  // abre o inventário mais recente com o setor clicado expandido
+  const invOrdem = [...state.inventarios].sort((a,b)=>new Date(b.dataHora)-new Date(a.dataHora));
+  const invAtivo = invOrdem.find(i=>!invEncerradoAutomatico(i)) || invOrdem[0];
+  if (invAtivo) {
+    invAberto = invAtivo.id;
+    invSetorAberto = invAtivo.id + '__' + setor;
+  }
+  trocarView('inventario');
+  renderInventarios();
+  // scroll até o setor
+  setTimeout(() => {
+    const el = document.getElementById('inv-setor-' + invAtivo?.id + '__' + setor);
+    if (el) el.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 150);
 });
 
 // ===== BUSCA / CHIPS =====
@@ -2233,6 +2374,272 @@ document.getElementById('modalHistorico').addEventListener('click', e => {
 });
 
 // ===== INIT =====
+// ===== INVENTÁRIO =====
+const SENHA_ADM = '159357';
+const DIAS_PRIO_INV = 3; // aparece em 3 inventários = prioridade
+let invAberto = null;       // id do inventário expandido
+let invSetorAberto = null;  // setor expandido dentro do inventário
+let invNotaEditId = null;   // id da invNota sendo editada (null = nova)
+let invSetorAtual = null;   // setor do card que abriu o modal
+let invFotosPend = [];
+let invStatusAtual = '';
+let _senhaAdmCallback = null; // callback após senha confirmada
+
+function ehDiaUtil(data) {
+  const d = data.getDay();
+  return d !== 0 && d !== 6;
+}
+function adicionarDiasUteis(data, n) {
+  const d = new Date(data);
+  let count = 0;
+  while (count < n) {
+    d.setDate(d.getDate() + 1);
+    if (ehDiaUtil(d)) count++;
+  }
+  return d;
+}
+function invEncerradoAutomatico(inv) {
+  if (inv.encerrado) return true;
+  const criado = new Date(inv.dataHora);
+  const limite = adicionarDiasUteis(criado, 1);
+  return new Date() > limite;
+}
+
+function pedirSenhaAdm(callback) {
+  _senhaAdmCallback = callback;
+  document.getElementById('inputSenhaAdm').value = '';
+  document.getElementById('modalSenhaAdm').classList.remove('hidden');
+}
+
+document.getElementById('btnConfirmarSenhaAdm').addEventListener('click', () => {
+  const senha = document.getElementById('inputSenhaAdm').value;
+  if (senha !== SENHA_ADM) { banner('bad', 'Senha incorreta.'); return; }
+  fecharModal('modalSenhaAdm');
+  if (_senhaAdmCallback) { _senhaAdmCallback(); _senhaAdmCallback = null; }
+});
+document.getElementById('btnCancelarSenhaAdm').addEventListener('click', () => {
+  fecharModal('modalSenhaAdm'); _senhaAdmCallback = null;
+});
+document.getElementById('modalSenhaAdm').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalSenhaAdm')) { fecharModal('modalSenhaAdm'); _senhaAdmCallback = null; }
+});
+
+function renderInventarios() {
+  const el = document.getElementById('listaInventarios');
+  const invs = [...state.inventarios].sort((a,b) => new Date(b.dataHora) - new Date(a.dataHora));
+  if (!invs.length) { el.innerHTML = empty('Nenhum inventário criado ainda. Toque em "+ Novo" para começar.'); return; }
+  el.innerHTML = invs.map(inv => {
+    const enc = invEncerradoAutomatico(inv);
+    const notas = state.invNotas.filter(n => n.inventarioId === inv.id);
+    const isOpen = invAberto === inv.id;
+    return `<div class="inv-card ${enc?'inv-enc':''}">
+      <div class="inv-card-hdr" data-inv-toggle="${esc(inv.id)}">
+        <div>
+          <div class="inv-card-titulo">${esc(inv.titulo)}</div>
+          <div class="inv-card-meta">${fmtDT(inv.dataHora)} · ${esc(inv.conferente||'?')}${enc?' · <span style="color:var(--faint)">Encerrado</span>':''}</div>
+        </div>
+        <div class="inv-card-badge">
+          <span class="inv-card-cnt">${notas.length} nota${notas.length!==1?'s':''}</span>
+          <span style="color:var(--dim);font-size:12px">${isOpen?'▲':'▼'}</span>
+        </div>
+      </div>
+      <div class="inv-body ${isOpen?'open':''}" id="inv-body-${esc(inv.id)}">
+        ${enc ? `<div style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)"><span style="font-size:12px;color:var(--faint)">Inventário encerrado após 1 dia útil</span><button class="btn btn-secondary btn-sm" data-inv-reabrir="${esc(inv.id)}">🔓 Reabrir</button></div>` : ''}
+        ${SETORES_LISTA.map(setor => {
+          const notasSetor = notas.filter(n => n.setor === setor);
+          const setorKey = inv.id+'__'+setor;
+          const setorOpen = invSetorAberto === setorKey;
+          return `<div class="inv-setor-card">
+            <div class="inv-setor-hdr" data-inv-setor="${esc(setorKey)}">
+              <span class="inv-setor-nome">${esc(setor)}</span>
+              <span class="inv-setor-cnt">${notasSetor.length?notasSetor.length+' nota'+(notasSetor.length>1?'s':''):''}</span>
+              ${!enc?`<button class="btn btn-primary btn-sm" data-inv-add-setor="${esc(setor)}" data-inv-id="${esc(inv.id)}" style="margin-left:8px">+</button>`:''}
+              <span style="color:var(--dim);font-size:11px;margin-left:4px">${setorOpen?'▲':'▼'}</span>
+            </div>
+            <div class="inv-setor-body ${setorOpen?'open':''}" id="inv-setor-${esc(setorKey)}">
+              ${notasSetor.length ? notasSetor.map(n => `
+                <div class="inv-nota-row">
+                  <div style="flex:1">
+                    <div class="inv-nota-nf">${esc(n.notaFiscal)} ${n.status?badge(n.status):''}</div>
+                    <div class="inv-nota-info">${n.volumes?n.volumes+' vol. · ':''}${esc(n.conferente||'')} · ${fmtDT(n.dataHora)}</div>
+                  </div>
+                  ${n.fotos&&n.fotos.length?`<div class="cam-badge" data-foto-view="${esc(n.fotos[0])}" style="cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>`:''}
+                  ${!enc?`<button class="btn btn-secondary btn-sm" data-inv-edit="${esc(n.id)}" data-inv-id="${esc(inv.id)}" data-inv-setor-edit="${esc(setor)}">✎</button><button class="btn btn-danger btn-sm" data-inv-del="${esc(n.id)}">✕</button>`:''}
+                </div>`).join('')
+              : `<div style="padding:8px 0;font-size:12px;color:var(--faint)">Nenhuma nota neste setor.</div>`}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Acordeão do inventário e setores
+document.getElementById('listaInventarios').addEventListener('click', e => {
+  // toggle inventário
+  const togBtn = e.target.closest('[data-inv-toggle]');
+  if (togBtn && !e.target.closest('[data-inv-add-setor]') && !e.target.closest('[data-inv-reabrir]') && !e.target.closest('[data-inv-setor]') && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]') && !e.target.closest('[data-foto-view]')) {
+    invAberto = invAberto === togBtn.dataset.invToggle ? null : togBtn.dataset.invToggle;
+    renderInventarios(); return;
+  }
+  // toggle setor
+  const setorBtn = e.target.closest('[data-inv-setor]');
+  if (setorBtn && !e.target.closest('[data-inv-add-setor]') && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]')) {
+    invSetorAberto = invSetorAberto === setorBtn.dataset.invSetor ? null : setorBtn.dataset.invSetor;
+    renderInventarios(); return;
+  }
+  // foto
+  const fotoBtn = e.target.closest('[data-foto-view]');
+  if (fotoBtn) { abrirFoto(fotoBtn.dataset.fotoView); return; }
+  // reabrir
+  const reabrirBtn = e.target.closest('[data-inv-reabrir]');
+  if (reabrirBtn) {
+    pedirSenhaAdm(() => {
+      const inv = state.inventarios.find(i => i.id === reabrirBtn.dataset.invReabrir);
+      if (!inv) return;
+      inv.encerrado = false;
+      cacheGuardar(); renderInventarios();
+      post({acao:'reabrirInventario', id:inv.id, conferente:getNome()}).catch(()=>{});
+      banner('ok', 'Inventário reaberto!');
+    });
+    return;
+  }
+  // adicionar nota
+  const addBtn = e.target.closest('[data-inv-add-setor]');
+  if (addBtn) {
+    const inv = state.inventarios.find(i => i.id === addBtn.dataset.invId);
+    if (!inv) return;
+    if (invEncerradoAutomatico(inv)) {
+      banner('bad', 'Inventário encerrado. Use "Reabrir" para editar.');
+      return;
+    }
+    abrirModalInvNota(addBtn.dataset.invId, addBtn.dataset.invAddSetor, null);
+    return;
+  }
+  // editar nota
+  const editBtn = e.target.closest('[data-inv-edit]');
+  if (editBtn) {
+    const inv = state.inventarios.find(i => i.id === editBtn.dataset.invId);
+    if (inv && invEncerradoAutomatico(inv)) { banner('bad','Inventário encerrado.'); return; }
+    abrirModalInvNota(editBtn.dataset.invId, editBtn.dataset.invSetorEdit, editBtn.dataset.invEdit);
+    return;
+  }
+  // excluir nota
+  const delBtn = e.target.closest('[data-inv-del]');
+  if (delBtn) {
+    if (!confirm('Remover esta nota do inventário?')) return;
+    state.invNotas = state.invNotas.filter(n => n.id !== delBtn.dataset.invDel);
+    cacheGuardar(); renderInventarios();
+    post({acao:'excluirInvNota', id:delBtn.dataset.invDel}).catch(()=>{});
+    return;
+  }
+});
+
+function abrirModalInvNota(invId, setor, editId) {
+  invNotaEditId = editId || null;
+  invSetorAtual = setor;
+  invFotosPend = [];
+  invStatusAtual = '';
+  document.querySelectorAll('#invStatusGrid .status-pill').forEach(b=>b.classList.remove('active'));
+  renderThumbsFoto([], 'thumbsInvNota');
+
+  if (editId) {
+    const n = state.invNotas.find(x => x.id === editId);
+    if (n) {
+      document.getElementById('invNF').value = n.notaFiscal;
+      document.getElementById('invVolumes').value = n.volumes;
+      invStatusAtual = n.status;
+      if (n.status) {
+        const pill = document.querySelector(`#invStatusGrid [data-inv-s="${n.status}"]`);
+        if (pill) pill.classList.add('active');
+      }
+    }
+    document.getElementById('modalInvNotaTitulo').textContent = 'Editar Nota';
+  } else {
+    document.getElementById('invNF').value = '';
+    document.getElementById('invVolumes').value = '';
+    document.getElementById('modalInvNotaTitulo').textContent = 'Adicionar Nota';
+  }
+  document.getElementById('modalInvNotaSub').textContent = 'Setor: ' + setor;
+  document.getElementById('modalInvNota').dataset.invId = invId;
+  document.getElementById('modalInvNota').classList.remove('hidden');
+  setTimeout(() => document.getElementById('invNF').focus(), 100);
+}
+
+document.getElementById('invStatusGrid').addEventListener('click', e => {
+  const btn = e.target.closest('[data-inv-s]'); if (!btn) return;
+  const jaAtivo = btn.classList.contains('active');
+  document.querySelectorAll('#invStatusGrid .status-pill').forEach(b=>b.classList.remove('active'));
+  invStatusAtual = jaAtivo ? '' : btn.dataset.invS;
+  if (!jaAtivo) btn.classList.add('active');
+});
+document.getElementById('btnInvFoto').addEventListener('click', () => document.getElementById('inputInvFoto').click());
+document.getElementById('inputInvFoto').addEventListener('change', async e => {
+  for (const f of [...e.target.files]) invFotosPend.push(await processarImg(f));
+  e.target.value = ''; renderThumbsFoto(invFotosPend, 'thumbsInvNota');
+});
+document.getElementById('thumbsInvNota').addEventListener('click', e => {
+  const btn = e.target.closest('[data-rm-foto]');
+  if (btn) { invFotosPend.splice(Number(btn.dataset.rmFoto),1); renderThumbsFoto(invFotosPend,'thumbsInvNota'); }
+});
+
+document.getElementById('btnSalvarInvNota').addEventListener('click', () => {
+  const nf = document.getElementById('invNF').value.trim();
+  if (!nf) { banner('bad','Informe a nota fiscal.'); return; }
+  if (!getNome()) { banner('bad','Configure seu nome primeiro.'); abrirModalConfig(); return; }
+  const invId = document.getElementById('modalInvNota').dataset.invId;
+  const agora = new Date().toISOString();
+  if (invNotaEditId) {
+    const n = state.invNotas.find(x => x.id === invNotaEditId);
+    if (n) {
+      n.notaFiscal = nf; n.volumes = document.getElementById('invVolumes').value.trim();
+      n.status = invStatusAtual; n.setor = invSetorAtual;
+      cacheGuardar(); renderInventarios();
+      post({acao:'atualizarInvNota', id:invNotaEditId, campos:{notaFiscal:nf,volumes:n.volumes,status:invStatusAtual,setor:invSetorAtual}}).catch(()=>{});
+      banner('ok','Nota atualizada!');
+    }
+  } else {
+    const nova = {id:uid(), inventarioId:invId, notaFiscal:nf, setor:invSetorAtual,
+      volumes:document.getElementById('invVolumes').value.trim(), fotos:[], status:invStatusAtual,
+      conferente:getNome(), dataHora:agora};
+    state.invNotas.push(nova);
+    cacheGuardar(); renderInventarios();
+    post({acao:'adicionarInvNota', dados:{...nova, fotos:invFotosPend}}).catch(()=>{});
+    banner('ok',`Nota ${nf} adicionada!`);
+  }
+  fecharModal('modalInvNota');
+});
+document.getElementById('btnFecharInvNota').addEventListener('click', () => fecharModal('modalInvNota'));
+document.getElementById('modalInvNota').addEventListener('click', e => { if(e.target===document.getElementById('modalInvNota')) fecharModal('modalInvNota'); });
+
+// Criar novo inventário
+document.getElementById('btnNovoInventario').addEventListener('click', () => {
+  if (!getNome()) { banner('bad','Configure seu nome primeiro.'); abrirModalConfig(); return; }
+  const agora = new Date();
+  const tituloAuto = 'Inventário ' + agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const novo = {id:uid(), titulo:tituloAuto, conferente:getNome(), dataHora:agora.toISOString(), encerrado:false};
+  state.inventarios.unshift(novo);
+  invAberto = novo.id;
+  invSetorAberto = null;
+  cacheGuardar(); renderInventarios();
+  post({acao:'criarInventario', dados:novo}).catch(()=>{});
+  banner('ok','Inventário criado!');
+});
+
+// Pesquisa global de nota fiscal em inventários
+document.getElementById('invBuscaNota').addEventListener('input', e => {
+  const t = e.target.value.trim().toLowerCase();
+  const el = document.getElementById('invBuscaResultado');
+  if (!t) { el.innerHTML=''; return; }
+  const resultados = state.invNotas.filter(n => n.notaFiscal.toLowerCase().includes(t));
+  if (!resultados.length) { el.innerHTML=`<div class="inv-buscares">Nota não encontrada nos inventários.</div>`; return; }
+  el.innerHTML = resultados.map(n => {
+    const inv = state.inventarios.find(i => i.id === n.inventarioId);
+    return `<div class="inv-buscares">Nota <strong>${esc(n.notaFiscal)}</strong> · Setor: <strong>${esc(n.setor||'?')}</strong> · ${inv?esc(inv.titulo):'?'} ${n.status?'· '+badge(n.status):''}</div>`;
+  }).join('');
+});
+
 // ===== TEMA CLARO/ESCURO =====
 const TEMA_KEY = 'risso_tema';
 function aplicarTema(tema) {
