@@ -291,6 +291,19 @@ body{overflow:hidden}
 .inv-nota-info{font-size:11.5px;color:var(--faint)}
 .inv-buscares{background:var(--surface2);border:1px solid var(--accentL);border-radius:var(--rs);padding:10px 13px;margin-bottom:4px;font-size:13px}
 .inv-buscares strong{color:var(--accentL)}
+/* conferência física */
+.conf-resultado-grupo{margin-bottom:12px}
+.conf-resultado-titulo{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);margin-bottom:6px}
+.conf-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--rs);margin-bottom:4px;font-size:13px;font-weight:600}
+.conf-item-ok{background:var(--okB);color:var(--ok)}
+.conf-item-pend{background:var(--warnB);color:var(--warn)}
+.conf-item-div{background:var(--badB);color:var(--bad)}
+.conf-item-cruz{background:var(--infoB);color:var(--info)}
+.conf-cruz-check{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--rs);background:var(--surface2);border:1px solid var(--border);margin-bottom:6px;font-size:12.5px}
+.conf-cruz-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--accentL);flex-shrink:0}
+/* badge de conferência no cabeçalho do setor */
+.conf-badge-ok{color:var(--ok);font-size:11px;font-weight:700}
+.conf-badge-pend{color:var(--warn);font-size:11px;font-weight:700}
 .feed-user-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}
 .feed-user-hdr:active{background:var(--surface2)}
 .feed-user-name{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}
@@ -383,9 +396,9 @@ body{overflow:hidden}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     <span>Movimentação</span>
   </button>
-  <button class="nav-btn drawer-item" data-view="inventario">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-    <span>Inventários</span>
+  <button class="nav-btn drawer-item" data-view="notas">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>Ocorrências</span>
   </button>
   <div style="height:1px;background:var(--border);margin:10px 4px"></div>
   <button class="drawer-item" id="drawerResumo">
@@ -436,7 +449,7 @@ body{overflow:hidden}
   <!-- NOTAS FISCAIS -->
   <section id="view-notas" class="view">
     <div class="sec-hdr">
-      <span class="sec-title">Inventário</span>
+      <span class="sec-title">Ocorrências</span>
       <button class="link-btn" id="btnToggleSel">Selecionar</button>
     </div>
     <!-- Barra de seleção múltipla -->
@@ -622,9 +635,9 @@ body{overflow:hidden}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
     <span>Painel</span>
   </button>
-  <button class="nav-btn" data-view="notas">
+  <button class="nav-btn" data-view="inventario">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-    <span>Inventário</span>
+    <span>Inventários</span>
   </button>
   <button class="nav-btn nav-main" data-view="registrar">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -671,6 +684,47 @@ body{overflow:hidden}
     <button class="btn btn-secondary" id="btnFecharConfig">Fechar</button>
   </div>
 </div>
+<!-- Modal: adicionar notas em lote ao setor -->
+<div class="modal-ov hidden" id="modalInvLote">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalLoteTitulo">Adicionar Notas</div>
+    <div class="modal-sub" id="modalLoteSub"></div>
+    <div class="form-group">
+      <label class="form-label">Notas fiscais (uma por linha)</label>
+      <textarea class="form-textarea" id="invLoteTexto" placeholder="966&#10;967&#10;968" rows="6" inputmode="numeric"></textarea>
+    </div>
+    <button class="btn btn-primary" id="btnSalvarInvLote">Adicionar todas</button>
+    <button class="btn btn-secondary" id="btnFecharInvLote">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal: conferência física de setor -->
+<div class="modal-ov hidden" id="modalConferencia">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalConfTitulo">Conferência Física</div>
+    <div class="modal-sub" id="modalConfSub"></div>
+    <div id="modalConfEtapa1">
+      <div class="form-group">
+        <label class="form-label">Digite as notas físicas encontradas (uma por linha)</label>
+        <textarea class="form-textarea" id="confFisicaTexto" placeholder="966&#10;967&#10;968" rows="7" inputmode="numeric"></textarea>
+      </div>
+      <button class="btn btn-primary" id="btnProcessarConf">Comparar</button>
+      <button class="btn btn-secondary" id="btnFecharConf">Cancelar</button>
+    </div>
+    <div id="modalConfResultado" style="display:none">
+      <div id="confResultadoCorpo"></div>
+      <div id="confCruzadosWrap" style="display:none;margin-top:12px">
+        <div class="sec-hdr"><span class="sec-title">⚠️ Notas em outro setor</span></div>
+        <div id="confCruzadosLista"></div>
+      </div>
+      <button class="btn btn-primary" id="btnSalvarConf" style="margin-top:14px">Salvar conferência</button>
+      <button class="btn btn-secondary" id="btnRefazerConf">Redigitar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: adicionar/editar nota no inventário -->
 <div class="modal-ov hidden" id="modalInvNota">
   <div class="modal-sheet">
@@ -705,6 +759,16 @@ body{overflow:hidden}
     </div>
     <button class="btn btn-primary" id="btnSalvarInvNota">Salvar</button>
     <button class="btn btn-secondary" id="btnFecharInvNota">Cancelar</button>
+    <!-- Comentários da nota (só visível ao editar) -->
+    <div id="invNotaComentariosWrap" style="display:none;margin-top:18px">
+      <div class="sec-hdr"><span class="sec-title">Comentários</span></div>
+      <div id="invNotaComentariosList"></div>
+      <div class="form-group" style="margin-top:10px">
+        <label class="form-label">Novo comentário</label>
+        <textarea class="form-textarea" id="invNotaComentarioTxt" placeholder="Digite um comentário..." rows="2"></textarea>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="btnEnviarInvComentario">Enviar comentário</button>
+    </div>
   </div>
 </div>
 
@@ -848,7 +912,7 @@ const ROTAS = Object.keys(SETOR_MAP).sort((a,b)=>Number(a)-Number(b)).map(cod =>
   setor: SETOR_MAP[cod],
   dias: DIAS_POR_SETOR[cod] || [0,1,2,3,4,5,6]
 }));
-let state = { notas:[], comentarios:[], separacoes:[], chegadas:[], movimentos:[], inventarios:[], invNotas:[] };
+let state = { notas:[], comentarios:[], separacoes:[], chegadas:[], movimentos:[], inventarios:[], invNotas:[], invComentarios:[], conferencias:[], confItens:[] };
 let syncing = false;
 let filtroNotas = 'todas';
 let filtroGaiolas = 'hoje';
@@ -917,6 +981,8 @@ function cacheCarregar() {
       state.movimentos  = (r.movimentos||[]).map(normM);
       state.inventarios = (r.inventarios||[]).map(normInv);
       state.invNotas    = (r.invNotas||[]).map(normInvNota);
+      state.conferencias = (r.conferencias||[]).map(c=>({...c,id:String(c.id||''),inventarioId:String(c.inventarioId||''),setor:String(c.setor||''),conferente:String(c.conferente||'')}));
+      state.confItens    = (r.confItens||[]).map(i=>({...i,id:String(i.id||''),conferenciaId:String(i.conferenciaId||''),inventarioId:String(i.inventarioId||''),notaFiscal:String(i.notaFiscal||''),resultado:String(i.resultado||''),setorRegistrado:String(i.setorRegistrado||''),setorEncontrado:String(i.setorEncontrado||'')}));
     }
   } catch(e) {}
 }
@@ -953,6 +1019,8 @@ async function carregarDados(mostrarErro=true) {
     state.movimentos  = (d.movimentos||[]).map(normM);
     state.inventarios = (d.inventarios||[]).map(normInv);
     state.invNotas    = (d.invNotas||[]).map(normInvNota);
+    state.conferencias = (d.conferencias||[]).map(c=>({...c,id:String(c.id||''),inventarioId:String(c.inventarioId||''),setor:String(c.setor||''),conferente:String(c.conferente||'')}));
+    state.confItens    = (d.confItens||[]).map(i=>({...i,id:String(i.id||''),conferenciaId:String(i.conferenciaId||''),inventarioId:String(i.inventarioId||''),notaFiscal:String(i.notaFiscal||''),resultado:String(i.resultado||''),setorRegistrado:String(i.setorRegistrado||''),setorEncontrado:String(i.setorEncontrado||'')}));
     cacheGuardar(); marcarSync(true); renderTudo();
   } catch(e) { marcarSync(false); if (mostrarErro) banner('bad','Sem conexão. Mostrando dados salvos.'); }
   finally { syncing=false; }
@@ -1462,17 +1530,24 @@ function abrirSeparacao(id) {
 function adicionarNotaNaSeparacao(sepId, nf, callback) {
   if (!nf) return;
   if (!getNome()) { banner('bad','Configure seu nome primeiro.'); return; }
-  const existente=state.notas.find(n=>n.notaFiscal===nf);
+  const sep = state.separacoes.find(s=>s.id===sepId);
+  let existente = state.notas.find(n=>n.notaFiscal===nf);
   if (!existente) {
-    banner('bad',`Nota ${nf} não encontrada. Cadastre primeiro na aba Notas.`);
-    return;
+    // cria a nota automaticamente sem exigir cadastro prévio
+    const agora = new Date().toISOString();
+    existente = {id:uid(),notaFiscal:nf,status:'',descricao:'',conferente:getNome(),dataHora:agora,
+      localizacao:'separacao',separacaoId:sepId,fotos:[],setor:'',peso:'',volumes:'',
+      conferidoPor:'',conferidoEm:'',dataUltimaMovimentacao:agora};
+    state.notas.push(existente);
+    registrarMovLocal('nota_adicionada',nf,'Adicionada direto na separação '+(sep?sep.titulo:''));
+    post({acao:'adicionarNota',dados:{...existente,fotos:[]}}).catch(()=>{});
+  } else {
+    existente.separacaoId=sepId; existente.localizacao='separacao'; existente.dataUltimaMovimentacao=new Date().toISOString();
+    registrarMovLocal('nota_movida',nf,'Movida para '+(sep?sep.titulo:''));
+    post({acao:'moverParaSeparacao',notaId:existente.id,separacaoId:sepId,notaFiscal:nf,conferente:getNome(),sepTitulo:sep?sep.titulo:''}).catch(()=>{});
   }
-  existente.separacaoId=sepId; existente.localizacao='separacao'; existente.dataUltimaMovimentacao=new Date().toISOString();
   cacheGuardar();
-  const sep=state.separacoes.find(s=>s.id===sepId);
-  registrarMovLocal('nota_movida',nf,'Movida para '+( sep?sep.titulo:''));
-  post({acao:'moverParaSeparacao',notaId:existente.id,separacaoId:sepId,notaFiscal:nf,conferente:getNome(),sepTitulo:sep?sep.titulo:''}).catch(()=>{});
-  banner('ok',`Nota ${nf} movida!`);
+  banner('ok',`Nota ${nf} adicionada à separação!`);
   renderTudo();
   if (callback) callback();
 }
@@ -2449,24 +2524,48 @@ function renderInventarios() {
           const notasSetor = notas.filter(n => n.setor === setor);
           const setorKey = inv.id+'__'+setor;
           const setorOpen = invSetorAberto === setorKey;
+          // conferência mais recente deste setor neste inventário
+          const confSetor = [...state.conferencias].filter(c=>c.inventarioId===inv.id&&c.setor===setor).sort((a,b)=>new Date(b.dataHora)-new Date(a.dataHora))[0];
+          const confItensSetor = confSetor ? state.confItens.filter(i=>i.conferenciaId===confSetor.id) : [];
+          const nPend = confItensSetor.filter(i=>i.resultado==='pendente').length;
+          const nDiv  = confItensSetor.filter(i=>i.resultado==='divergencia').length;
+          const confBadge = confSetor
+            ? (nPend||nDiv ? `<span class="conf-badge-pend">⚠️ ${nPend+nDiv} divergência${nPend+nDiv>1?'s':''}</span>` : `<span class="conf-badge-ok">✅ Conferido</span>`)
+            : '';
           return `<div class="inv-setor-card">
-            <div class="inv-setor-hdr" data-inv-setor="${esc(setorKey)}">
+            <div class="inv-setor-hdr" data-inv-setor="${esc(setorKey)}" data-inv-lote-setor="${esc(setor)}" data-inv-lote-id="${esc(inv.id)}">
               <span class="inv-setor-nome">${esc(setor)}</span>
               <span class="inv-setor-cnt">${notasSetor.length?notasSetor.length+' nota'+(notasSetor.length>1?'s':''):''}</span>
-              ${!enc?`<button class="btn btn-primary btn-sm" data-inv-add-setor="${esc(setor)}" data-inv-id="${esc(inv.id)}" style="margin-left:8px">+</button>`:''}
+              ${confBadge}
+              ${!enc?`<button class="btn btn-secondary btn-sm" data-inv-conferir="${esc(setorKey)}" data-inv-conf-id="${esc(inv.id)}" data-inv-conf-setor="${esc(setor)}" style="margin-left:4px">Conferir</button>`:''}
               <span style="color:var(--dim);font-size:11px;margin-left:4px">${setorOpen?'▲':'▼'}</span>
             </div>
             <div class="inv-setor-body ${setorOpen?'open':''}" id="inv-setor-${esc(setorKey)}">
-              ${notasSetor.length ? notasSetor.map(n => `
-                <div class="inv-nota-row">
+              ${notasSetor.length ? notasSetor.map(n => {
+                // verifica se esta nota aparece no resultado da conferência
+                const itemConf = confItensSetor.find(i=>i.notaFiscal===n.notaFiscal);
+                const confIcon = itemConf
+                  ? (itemConf.resultado==='ok'?'<span title="Verificada fisicamente" style="color:var(--ok)">✅</span>'
+                    :itemConf.resultado==='cruzado'?`<span title="Encontrada no ${esc(itemConf.setorEncontrado)}" style="color:var(--info)">🔀</span>`
+                    :'<span title="Não encontrada fisicamente" style="color:var(--warn)">⚠️</span>')
+                  : '<span style="color:var(--faint);font-size:11px">—</span>';
+                return `<div class="inv-nota-row">
                   <div style="flex:1">
-                    <div class="inv-nota-nf">${esc(n.notaFiscal)} ${n.status?badge(n.status):''}</div>
+                    <div class="inv-nota-nf">${confIcon} ${esc(n.notaFiscal)} ${n.status?badge(n.status):''}</div>
                     <div class="inv-nota-info">${n.volumes?n.volumes+' vol. · ':''}${esc(n.conferente||'')} · ${fmtDT(n.dataHora)}</div>
+                    ${itemConf&&itemConf.resultado==='cruzado'?`<div class="inv-nota-info" style="color:var(--info)">Mercadoria encontrada em: ${esc(itemConf.setorEncontrado)}</div>`:''}
                   </div>
                   ${n.fotos&&n.fotos.length?`<div class="cam-badge" data-foto-view="${esc(n.fotos[0])}" style="cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>`:''}
                   ${!enc?`<button class="btn btn-secondary btn-sm" data-inv-edit="${esc(n.id)}" data-inv-id="${esc(inv.id)}" data-inv-setor-edit="${esc(setor)}">✎</button><button class="btn btn-danger btn-sm" data-inv-del="${esc(n.id)}">✕</button>`:''}
-                </div>`).join('')
+                </div>`;
+              }).join('')
               : `<div style="padding:8px 0;font-size:12px;color:var(--faint)">Nenhuma nota neste setor.</div>`}
+              ${confSetor&&confItensSetor.filter(i=>i.resultado==='divergencia').length?`
+                <div style="margin-top:8px;padding:8px;background:var(--badB);border-radius:var(--rs)">
+                  <div style="font-size:11px;font-weight:800;color:var(--bad);margin-bottom:4px">🔴 FÍSICAS NÃO REGISTRADAS:</div>
+                  ${confItensSetor.filter(i=>i.resultado==='divergencia').map(i=>`<div style="font-size:12.5px;color:var(--bad);padding:2px 0">${esc(i.notaFiscal)}</div>`).join('')}
+                </div>`:''
+              }
             </div>
           </div>`;
         }).join('')}
@@ -2479,20 +2578,14 @@ function renderInventarios() {
 document.getElementById('listaInventarios').addEventListener('click', e => {
   // toggle inventário
   const togBtn = e.target.closest('[data-inv-toggle]');
-  if (togBtn && !e.target.closest('[data-inv-add-setor]') && !e.target.closest('[data-inv-reabrir]') && !e.target.closest('[data-inv-setor]') && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]') && !e.target.closest('[data-foto-view]')) {
+  if (togBtn && !e.target.closest('[data-inv-reabrir]') && !e.target.closest('[data-inv-setor]') && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]') && !e.target.closest('[data-foto-view]') && !e.target.closest('[data-inv-conferir]')) {
     invAberto = invAberto === togBtn.dataset.invToggle ? null : togBtn.dataset.invToggle;
-    renderInventarios(); return;
-  }
-  // toggle setor
-  const setorBtn = e.target.closest('[data-inv-setor]');
-  if (setorBtn && !e.target.closest('[data-inv-add-setor]') && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]')) {
-    invSetorAberto = invSetorAberto === setorBtn.dataset.invSetor ? null : setorBtn.dataset.invSetor;
     renderInventarios(); return;
   }
   // foto
   const fotoBtn = e.target.closest('[data-foto-view]');
   if (fotoBtn) { abrirFoto(fotoBtn.dataset.fotoView); return; }
-  // reabrir
+  // reabrir inventário encerrado
   const reabrirBtn = e.target.closest('[data-inv-reabrir]');
   if (reabrirBtn) {
     pedirSenhaAdm(() => {
@@ -2505,16 +2598,26 @@ document.getElementById('listaInventarios').addEventListener('click', e => {
     });
     return;
   }
-  // adicionar nota
-  const addBtn = e.target.closest('[data-inv-add-setor]');
-  if (addBtn) {
-    const inv = state.inventarios.find(i => i.id === addBtn.dataset.invId);
-    if (!inv) return;
-    if (invEncerradoAutomatico(inv)) {
-      banner('bad', 'Inventário encerrado. Use "Reabrir" para editar.');
-      return;
+  // botão Conferir setor
+  const confBtn = e.target.closest('[data-inv-conferir]');
+  if (confBtn) {
+    abrirModalConferencia(confBtn.dataset.invConfId, confBtn.dataset.invConfSetor);
+    return;
+  }
+  // toggle setor (clique no cabeçalho) — também abre modal de lote se não encerrado
+  const setorHdr = e.target.closest('[data-inv-setor]');
+  if (setorHdr && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]') && !e.target.closest('[data-inv-conferir]')) {
+    const setorKey = setorHdr.dataset.invSetor;
+    const invId = setorHdr.dataset.invLoteId;
+    const setor = setorHdr.dataset.invLoteSetor;
+    const inv = state.inventarios.find(i=>i.id===invId);
+    // expande/colapsa
+    invSetorAberto = invSetorAberto === setorKey ? null : setorKey;
+    renderInventarios();
+    // se expandiu e inventário não encerrado, abre modal de lote
+    if (invSetorAberto === setorKey && inv && !invEncerradoAutomatico(inv)) {
+      setTimeout(() => abrirModalLote(invId, setor), 120);
     }
-    abrirModalInvNota(addBtn.dataset.invId, addBtn.dataset.invAddSetor, null);
     return;
   }
   // editar nota
@@ -2556,10 +2659,14 @@ function abrirModalInvNota(invId, setor, editId) {
       }
     }
     document.getElementById('modalInvNotaTitulo').textContent = 'Editar Nota';
+    document.getElementById('invNotaComentariosWrap').style.display = '';
+    document.getElementById('invNotaComentarioTxt').value = '';
+    renderInvComentarios(editId);
   } else {
     document.getElementById('invNF').value = '';
     document.getElementById('invVolumes').value = '';
     document.getElementById('modalInvNotaTitulo').textContent = 'Adicionar Nota';
+    document.getElementById('invNotaComentariosWrap').style.display = 'none';
   }
   document.getElementById('modalInvNotaSub').textContent = 'Setor: ' + setor;
   document.getElementById('modalInvNota').dataset.invId = invId;
@@ -2633,12 +2740,217 @@ document.getElementById('invBuscaNota').addEventListener('input', e => {
   const el = document.getElementById('invBuscaResultado');
   if (!t) { el.innerHTML=''; return; }
   const resultados = state.invNotas.filter(n => n.notaFiscal.toLowerCase().includes(t));
-  if (!resultados.length) { el.innerHTML=`<div class="inv-buscares">Nota não encontrada nos inventários.</div>`; return; }
-  el.innerHTML = resultados.map(n => {
-    const inv = state.inventarios.find(i => i.id === n.inventarioId);
-    return `<div class="inv-buscares">Nota <strong>${esc(n.notaFiscal)}</strong> · Setor: <strong>${esc(n.setor||'?')}</strong> · ${inv?esc(inv.titulo):'?'} ${n.status?'· '+badge(n.status):''}</div>`;
-  }).join('');
+  // também busca em separações
+  const sepResults = [];
+  state.separacoes.forEach(sep => {
+    const notasSep = state.notas.filter(n => n.separacaoId === sep.id && n.notaFiscal.toLowerCase().includes(t));
+    notasSep.forEach(n => sepResults.push({nf: n.notaFiscal, sep: sep.titulo}));
+  });
+  if (!resultados.length && !sepResults.length) { el.innerHTML=`<div class="inv-buscares">Nota não encontrada nos inventários.</div>`; return; }
+  el.innerHTML = [
+    ...resultados.map(n => {
+      const inv = state.inventarios.find(i => i.id === n.inventarioId);
+      return `<div class="inv-buscares">Nota <strong>${esc(n.notaFiscal)}</strong> · Setor: <strong>${esc(n.setor||'?')}</strong> · ${inv?esc(inv.titulo):'?'} ${n.status?'· '+badge(n.status):''}</div>`;
+    }),
+    ...sepResults.map(r => `<div class="inv-buscares">Nota <strong>${esc(r.nf)}</strong> · Separação: <strong>${esc(r.sep)}</strong></div>`)
+  ].join('');
 });
+
+// Comentários por nota de inventário
+function renderInvComentarios(invNotaId) {
+  const lista = (state.invComentarios||[]).filter(c=>c.invNotaId===invNotaId)
+    .sort((a,b)=>new Date(a.dataHora)-new Date(b.dataHora));
+  const el = document.getElementById('invNotaComentariosList');
+  if (!lista.length) { el.innerHTML='<div class="card-meta" style="padding:4px 0;color:var(--faint)">Nenhum comentário ainda.</div>'; return; }
+  el.innerHTML = lista.map(c=>`
+    <div class="hist-item">
+      <div class="hist-who">${esc(c.conferente||'?')} · ${fmtDT(c.dataHora)}</div>
+      <div class="hist-txt">${esc(c.texto)}</div>
+    </div>`).join('');
+}
+document.getElementById('btnEnviarInvComentario').addEventListener('click', () => {
+  const txt = document.getElementById('invNotaComentarioTxt').value.trim();
+  if (!txt) { banner('bad','Digite um comentário.'); return; }
+  if (!invNotaEditId) return;
+  const comentario = { id:uid(), invNotaId:invNotaEditId, texto:txt, conferente:getNome(), dataHora:new Date().toISOString() };
+  if (!state.invComentarios) state.invComentarios = [];
+  state.invComentarios.push(comentario);
+  document.getElementById('invNotaComentarioTxt').value = '';
+  renderInvComentarios(invNotaEditId);
+  cacheGuardar();
+  // salva no backend reaproveitando comentários normais com notaId = invNotaId
+  post({acao:'adicionarComentario', dados:{
+    id: comentario.id, notaId: invNotaEditId, notaFiscal: invNotaEditId,
+    texto: txt, conferente: getNome(), dataHora: comentario.dataHora, fotos:[]
+  }}).catch(()=>{});
+  banner('ok','Comentário adicionado!');
+});
+
+// ===== MODAL ADIÇÃO EM LOTE =====
+let invLoteInvId = null;
+let invLoteSetor = null;
+
+function abrirModalLote(invId, setor) {
+  invLoteInvId = invId;
+  invLoteSetor = setor;
+  document.getElementById('modalLoteTitulo').textContent = 'Adicionar Notas';
+  document.getElementById('modalLoteSub').textContent = 'Setor: ' + setor + ' — uma nota por linha';
+  document.getElementById('invLoteTexto').value = '';
+  document.getElementById('modalInvLote').classList.remove('hidden');
+  setTimeout(() => document.getElementById('invLoteTexto').focus(), 100);
+}
+document.getElementById('btnSalvarInvLote').addEventListener('click', () => {
+  if (!invLoteInvId || !invLoteSetor) return;
+  if (!getNome()) { banner('bad','Configure seu nome primeiro.'); return; }
+  const inv = state.inventarios.find(i=>i.id===invLoteInvId);
+  if (!inv || invEncerradoAutomatico(inv)) { banner('bad','Inventário encerrado.'); return; }
+  const linhas = document.getElementById('invLoteTexto').value
+    .split('\n').map(l=>l.trim()).filter(Boolean);
+  if (!linhas.length) { banner('bad','Nenhuma nota digitada.'); return; }
+  const agora = new Date().toISOString();
+  const novas = linhas.map(nf => ({
+    id:uid(), inventarioId:invLoteInvId, notaFiscal:nf,
+    setor:invLoteSetor, volumes:'', fotos:[], status:'',
+    conferente:getNome(), dataHora:agora
+  }));
+  novas.forEach(n => state.invNotas.push(n));
+  cacheGuardar(); renderInventarios();
+  novas.forEach(n => post({acao:'adicionarInvNota', dados:n}).catch(()=>{}));
+  fecharModal('modalInvLote');
+  banner('ok', `${novas.length} nota${novas.length>1?'s':''} adicionada${novas.length>1?'s':''}!`);
+});
+document.getElementById('btnFecharInvLote').addEventListener('click', () => fecharModal('modalInvLote'));
+document.getElementById('modalInvLote').addEventListener('click', e => { if(e.target===document.getElementById('modalInvLote')) fecharModal('modalInvLote'); });
+
+// ===== MODAL CONFERÊNCIA FÍSICA =====
+let confInvId = null;
+let confSetor = null;
+let confItensTemp = []; // itens processados aguardando confirmação
+
+function abrirModalConferencia(invId, setor) {
+  confInvId = invId;
+  confSetor = setor;
+  confItensTemp = [];
+  document.getElementById('modalConfTitulo').textContent = 'Conferência: ' + setor;
+  document.getElementById('modalConfSub').textContent = 'Digite as notas encontradas fisicamente neste setor';
+  document.getElementById('confFisicaTexto').value = '';
+  document.getElementById('modalConfEtapa1').style.display = '';
+  document.getElementById('modalConfResultado').style.display = 'none';
+  document.getElementById('modalConferencia').classList.remove('hidden');
+  setTimeout(() => document.getElementById('confFisicaTexto').focus(), 100);
+}
+
+document.getElementById('btnProcessarConf').addEventListener('click', () => {
+  const fisicas = document.getElementById('confFisicaTexto').value
+    .split('\n').map(l=>l.trim()).filter(Boolean);
+  if (!fisicas.length) { banner('bad','Digite pelo menos uma nota.'); return; }
+
+  const notasSistema = state.invNotas.filter(n=>n.inventarioId===confInvId&&n.setor===confSetor);
+  const nfSistema = notasSistema.map(n=>n.notaFiscal);
+
+  // notas em OUTROS setores deste inventário (para detecção cruzada)
+  const notasOutrosSetores = state.invNotas.filter(n=>n.inventarioId===confInvId&&n.setor!==confSetor);
+
+  const itens = [];
+  const cruzados = []; // notas físicas encontradas em outro setor do sistema
+
+  fisicas.forEach(nf => {
+    const noSistemaAqui = nfSistema.includes(nf);
+    if (noSistemaAqui) {
+      itens.push({id:uid(), notaFiscal:nf, resultado:'ok', setorRegistrado:confSetor, setorEncontrado:confSetor});
+    } else {
+      // verifica se está em outro setor do mesmo inventário
+      const emOutroSetor = notasOutrosSetores.find(n=>n.notaFiscal===nf);
+      if (emOutroSetor) {
+        cruzados.push({nf, setorRegistrado:emOutroSetor.setor, confirmado:false});
+      } else {
+        // não está em nenhum setor do sistema = divergência (físico não registrado)
+        itens.push({id:uid(), notaFiscal:nf, resultado:'divergencia', setorRegistrado:'', setorEncontrado:confSetor});
+      }
+    }
+  });
+
+  // notas do sistema não encontradas fisicamente = pendentes
+  nfSistema.forEach(nf => {
+    if (!fisicas.includes(nf) && !itens.find(i=>i.notaFiscal===nf)) {
+      itens.push({id:uid(), notaFiscal:nf, resultado:'pendente', setorRegistrado:confSetor, setorEncontrado:''});
+    }
+  });
+
+  confItensTemp = itens;
+
+  // monta resultado visual
+  const grupos = {ok:[], pendente:[], divergencia:[]};
+  itens.forEach(i => grupos[i.resultado]?.push(i));
+
+  let html = '';
+  if (grupos.ok.length) html += `<div class="conf-resultado-grupo"><div class="conf-resultado-titulo">✅ Encontradas (${grupos.ok.length})</div>${grupos.ok.map(i=>`<div class="conf-item conf-item-ok">${esc(i.notaFiscal)}</div>`).join('')}</div>`;
+  if (grupos.pendente.length) html += `<div class="conf-resultado-grupo"><div class="conf-resultado-titulo">⚠️ Não encontradas fisicamente (${grupos.pendente.length})</div>${grupos.pendente.map(i=>`<div class="conf-item conf-item-pend">${esc(i.notaFiscal)}</div>`).join('')}</div>`;
+  if (grupos.divergencia.length) html += `<div class="conf-resultado-grupo"><div class="conf-resultado-titulo">🔴 Físicas não registradas no sistema (${grupos.divergencia.length})</div>${grupos.divergencia.map(i=>`<div class="conf-item conf-item-div">${esc(i.notaFiscal)}</div>`).join('')}</div>`;
+
+  document.getElementById('confResultadoCorpo').innerHTML = html;
+
+  // cruzados — mostrar checkboxes pra confirmar
+  if (cruzados.length) {
+    document.getElementById('confCruzadosWrap').style.display = '';
+    document.getElementById('confCruzadosLista').innerHTML = cruzados.map((c,idx) =>
+      `<div class="conf-cruz-check">
+        <input type="checkbox" id="cruz_${idx}" data-cruz-idx="${idx}" data-cruz-nf="${esc(c.nf)}" data-cruz-setor="${esc(c.setorRegistrado)}">
+        <label for="cruz_${idx}" style="flex:1;cursor:pointer">
+          <strong>${esc(c.nf)}</strong> — registrada no <strong>${esc(c.setorRegistrado)}</strong><br>
+          <span style="font-size:11.5px;color:var(--faint)">Confirmar que a mercadoria está aqui no ${esc(confSetor)}?</span>
+        </label>
+      </div>`
+    ).join('');
+  } else {
+    document.getElementById('confCruzadosWrap').style.display = 'none';
+  }
+
+  document.getElementById('modalConfEtapa1').style.display = 'none';
+  document.getElementById('modalConfResultado').style.display = '';
+});
+
+document.getElementById('btnSalvarConf').addEventListener('click', () => {
+  if (!getNome()) { banner('bad','Configure seu nome primeiro.'); return; }
+
+  // adiciona cruzados confirmados
+  document.querySelectorAll('#confCruzadosLista input[type=checkbox]:checked').forEach(cb => {
+    confItensTemp.push({
+      id:uid(), notaFiscal:cb.dataset.cruzNf, resultado:'cruzado',
+      setorRegistrado:cb.dataset.cruzSetor, setorEncontrado:confSetor
+    });
+  });
+
+  const agora = new Date().toISOString();
+  const conf = {id:uid(), inventarioId:confInvId, setor:confSetor, conferente:getNome(), dataHora:agora, itens:confItensTemp};
+
+  // remove conferência anterior deste setor (substitui)
+  const confAnterior = state.conferencias.find(c=>c.inventarioId===confInvId&&c.setor===confSetor);
+  if (confAnterior) {
+    state.conferencias = state.conferencias.filter(c=>c.id!==confAnterior.id);
+    state.confItens = state.confItens.filter(i=>i.conferenciaId!==confAnterior.id);
+    post({acao:'excluirConferencia', id:confAnterior.id}).catch(()=>{});
+  }
+
+  // salva localmente
+  state.conferencias.push({id:conf.id, inventarioId:conf.inventarioId, setor:conf.setor, conferente:conf.conferente, dataHora:conf.dataHora});
+  confItensTemp.forEach(item => state.confItens.push({...item, conferenciaId:conf.id, inventarioId:confInvId, conferente:getNome(), dataHora:agora}));
+  cacheGuardar(); renderInventarios();
+
+  // persiste no backend
+  post({acao:'salvarConferencia', dados:conf}).catch(()=>{});
+
+  fecharModal('modalConferencia');
+  const nDiv = confItensTemp.filter(i=>i.resultado==='pendente'||i.resultado==='divergencia').length;
+  banner(nDiv?'bad':'ok', nDiv ? `Conferência salva — ${nDiv} divergência${nDiv>1?'s':''}` : '✅ Setor conferido sem divergências!');
+});
+
+document.getElementById('btnRefazerConf').addEventListener('click', () => {
+  document.getElementById('modalConfEtapa1').style.display = '';
+  document.getElementById('modalConfResultado').style.display = 'none';
+});
+document.getElementById('btnFecharConf').addEventListener('click', () => fecharModal('modalConferencia'));
+document.getElementById('modalConferencia').addEventListener('click', e => { if(e.target===document.getElementById('modalConferencia')) fecharModal('modalConferencia'); });
 
 // ===== TEMA CLARO/ESCURO =====
 const TEMA_KEY = 'risso_tema';
