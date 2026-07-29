@@ -16,7 +16,7 @@
  */
 
 // Suba este número toda vez que quiser forçar a atualização do cache.
-const VERSAO_CACHE = 'armazem-risso-v12';
+const VERSAO_CACHE = 'armazem-risso-v14';
 
 const ARQUIVOS_ESTATICOS = [
   './',
