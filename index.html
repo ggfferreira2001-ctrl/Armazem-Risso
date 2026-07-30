@@ -291,7 +291,37 @@ body{overflow:hidden}
 .inv-nota-info{font-size:11.5px;color:var(--faint)}
 .inv-buscares{background:var(--surface2);border:1px solid var(--accentL);border-radius:var(--rs);padding:10px 13px;margin-bottom:4px;font-size:13px}
 .inv-buscares strong{color:var(--accentL)}
-/* conferência física */
+/* ===== MODAL RELATÓRIO DE INVENTÁRIO ===== */
+.modal-full{position:absolute;inset:0;z-index:97;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.modal-full.hidden{display:none}
+.modal-full-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0}
+.modal-full-titulo{font-size:15px;font-weight:800}
+.modal-full-body{flex:1;overflow-y:auto;padding:16px}
+.rel-tabs{display:flex;gap:4px;padding:0 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.rel-tab{padding:10px 16px;font-size:13px;font-weight:700;border:none;background:none;color:var(--faint);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.rel-tab.active{color:var(--accentL);border-bottom-color:var(--accentL)}
+.rel-tab-pane{display:none}.rel-tab-pane.active{display:block}
+/* KPI cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px}
+.kpi-icon{font-size:18px;margin-bottom:4px}
+.kpi-val{font-size:22px;font-weight:800;color:var(--accentL)}
+.kpi-lbl{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-top:2px}
+/* insights */
+.insight-item{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--surface2);border-radius:var(--rs);margin-bottom:7px;font-size:13px}
+.insight-icon{font-size:16px;flex-shrink:0}
+/* comparação */
+.comp-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.comp-table th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--dim);padding:8px 10px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.comp-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-ok{background:var(--okB);color:var(--ok);font-weight:700;border-radius:4px;padding:1px 6px}
+.comp-diff{background:var(--badB);color:var(--bad);font-weight:700;border-radius:4px;padding:1px 6px}
+.comp-sel-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:14px}
+.comp-inv-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.comp-inv-row:last-child{border-bottom:none}
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px}
+.chart-titulo{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--dim);margin-bottom:10px}
 .conf-resultado-grupo{margin-bottom:12px}
 .conf-resultado-titulo{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);margin-bottom:6px}
 .conf-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--rs);margin-bottom:4px;font-size:13px;font-weight:600}
@@ -304,6 +334,25 @@ body{overflow:hidden}
 /* badge de conferência no cabeçalho do setor */
 .conf-badge-ok{color:var(--ok);font-size:11px;font-weight:700}
 .conf-badge-pend{color:var(--warn);font-size:11px;font-weight:700}
+/* relatório inventário */
+.rel-inv-tab.active{color:var(--text)!important;border-bottom-color:var(--accentL)!important}
+.rel-inv-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.rel-inv-kpi{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px}
+.rel-inv-kpi-val{font-size:26px;font-weight:800;color:var(--accentL)}
+.rel-inv-kpi-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dim);margin-top:3px}
+.rel-inv-kpi-icon{font-size:18px;margin-bottom:4px}
+.rel-inv-sec{margin-bottom:18px}
+.rel-inv-sec-tit{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.rel-inv-insight{background:var(--accentD);border:1px solid var(--accentL);border-radius:var(--rs);padding:9px 12px;margin-bottom:6px;font-size:12.5px;color:var(--text)}
+.rel-inv-tabela{width:100%;border-collapse:collapse;font-size:12.5px}
+.rel-inv-tabela th{text-align:left;padding:8px 10px;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--dim);border-bottom:1px solid var(--border);background:var(--surface2)}
+.rel-inv-tabela td{padding:8px 10px;border-bottom:1px solid var(--border)}
+.rel-inv-tabela tr:last-child td{border-bottom:none}
+.rel-inv-tabela .cel-ok{background:var(--okB);color:var(--ok);font-weight:700}
+.rel-inv-tabela .cel-dif{background:var(--badB);color:var(--bad);font-weight:700}
+.rel-comp-check{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--rs);background:var(--surface2);border:1px solid var(--border);margin-bottom:5px;font-size:13px;cursor:pointer}
+.rel-comp-check input{width:16px;height:16px;accent-color:var(--accentL);flex-shrink:0}
+@media print{.modal-ov{position:static!important;background:none!important}.modal-sheet{height:auto!important;max-height:none!important;border-radius:0!important;box-shadow:none!important}.bottombar,.topbar,#btnFecharRelInv,.rel-inv-tab{display:none!important}}
 .feed-user-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}
 .feed-user-hdr:active{background:var(--surface2)}
 .feed-user-name{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}
@@ -387,6 +436,7 @@ body{overflow:hidden}
   .no-print{display:none!important}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
 </head>
 <body>
 <div class="app">
@@ -586,7 +636,12 @@ body{overflow:hidden}
   <section id="view-inventario" class="view">
     <div class="sec-hdr">
       <span class="sec-title">Inventários</span>
-      <button class="link-btn" id="btnNovoInventario">+ Novo</button>
+      <div style="display:flex;gap:7px">
+        <button class="link-btn" id="btnRelatorioInventario">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:middle;margin-right:3px"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Relatórios
+        </button>
+        <button class="link-btn" id="btnNovoInventario">+ Novo</button>
+      </div>
     </div>
     <!-- Pesquisa global de nota em inventários -->
     <div class="search-wrap" style="margin-bottom:10px">
@@ -684,6 +739,60 @@ body{overflow:hidden}
     <button class="btn btn-secondary" id="btnFecharConfig">Fechar</button>
   </div>
 </div>
+<!-- Modal: Relatórios de Inventário -->
+<div class="modal-ov hidden" id="modalRelInv" style="align-items:stretch;padding:0">
+  <div class="modal-sheet" style="border-radius:0;max-height:100vh;height:100vh;width:100%;max-width:100%;padding:0;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div style="font-size:16px;font-weight:800">📊 Relatórios de Inventário</div>
+      <button class="icon-btn" id="btnFecharRelInv">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <!-- Abas -->
+    <div style="display:flex;border-bottom:1px solid var(--border);flex-shrink:0">
+      <button class="rel-inv-tab active" data-rel-tab="resumo" style="flex:1;padding:11px;font-size:13px;font-weight:700;background:none;border:none;color:var(--text);cursor:pointer;border-bottom:2px solid var(--accentL)">Resumo</button>
+      <button class="rel-inv-tab" data-rel-tab="comparar" style="flex:1;padding:11px;font-size:13px;font-weight:700;background:none;border:none;color:var(--faint);cursor:pointer;border-bottom:2px solid transparent">Comparar</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:16px 18px" id="relInvCorpo">
+    </div>
+    <div style="flex-shrink:0;padding:10px 18px;border-top:1px solid var(--border);display:flex;gap:8px">
+      <button class="btn btn-secondary btn-sm" id="btnRelInvPDF">🖨️ PDF</button>
+      <button class="btn btn-secondary btn-sm" id="btnRelInvCSV">⬇️ CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Relatório de Inventário (fullscreen) -->
+<div class="modal-full hidden" id="modalRelatorio">
+  <div class="modal-full-hdr">
+    <span class="modal-full-titulo">📊 Relatório de Inventário</span>
+    <button class="btn btn-secondary btn-sm" id="btnFecharRelatorio">✕ Fechar</button>
+  </div>
+  <div class="rel-tabs">
+    <button class="rel-tab active" data-rel-tab="resumo">Resumo do Inventário</button>
+    <button class="rel-tab" data-rel-tab="comparar">Comparar Inventários</button>
+  </div>
+  <div class="modal-full-body">
+    <!-- ABA 1: Resumo -->
+    <div class="rel-tab-pane active" id="relTabResumo">
+      <div class="form-group" style="margin-bottom:14px">
+        <label class="form-label">Selecione o inventário</label>
+        <select class="form-input" id="relInvSelect"><option value="">— Selecione —</option></select>
+      </div>
+      <div id="relResumoCorpo"></div>
+    </div>
+    <!-- ABA 2: Comparar -->
+    <div class="rel-tab-pane" id="relTabComparar">
+      <div class="comp-sel-wrap">
+        <div class="form-label" style="margin-bottom:8px">Selecione os inventários para comparar:</div>
+        <div id="compInvLista"></div>
+        <button class="btn btn-primary btn-sm" id="btnCompararInv" style="margin-top:10px">Comparar Inventários</button>
+      </div>
+      <div id="relCompararCorpo"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: adicionar notas em lote ao setor -->
 <div class="modal-ov hidden" id="modalInvLote">
   <div class="modal-sheet">
@@ -692,7 +801,7 @@ body{overflow:hidden}
     <div class="modal-sub" id="modalLoteSub"></div>
     <div class="form-group">
       <label class="form-label">Notas fiscais (uma por linha)</label>
-      <textarea class="form-textarea" id="invLoteTexto" placeholder="966&#10;967&#10;968" rows="6" inputmode="numeric"></textarea>
+      <textarea class="form-textarea" id="invLoteTexto" placeholder="966&#10;967 5&#10;968 3&#10;(nota ou nota + quantidade separados por espaço)" rows="6" inputmode="numeric"></textarea>
     </div>
     <button class="btn btn-primary" id="btnSalvarInvLote">Adicionar todas</button>
     <button class="btn btn-secondary" id="btnFecharInvLote">Cancelar</button>
@@ -2509,12 +2618,13 @@ function renderInventarios() {
     const isOpen = invAberto === inv.id;
     return `<div class="inv-card ${enc?'inv-enc':''}">
       <div class="inv-card-hdr" data-inv-toggle="${esc(inv.id)}">
-        <div>
+        <div style="flex:1;min-width:0">
           <div class="inv-card-titulo">${esc(inv.titulo)}</div>
           <div class="inv-card-meta">${fmtDT(inv.dataHora)} · ${esc(inv.conferente||'?')}${enc?' · <span style="color:var(--faint)">Encerrado</span>':''}</div>
         </div>
         <div class="inv-card-badge">
           <span class="inv-card-cnt">${notas.length} nota${notas.length!==1?'s':''}</span>
+          ${!enc?`<button class="btn btn-danger btn-sm" data-inv-apagar="${esc(inv.id)}" style="padding:3px 8px;font-size:11px">🗑️</button>`:''}
           <span style="color:var(--dim);font-size:12px">${isOpen?'▲':'▼'}</span>
         </div>
       </div>
@@ -2541,8 +2651,7 @@ function renderInventarios() {
               <span style="color:var(--dim);font-size:11px;margin-left:4px">${setorOpen?'▲':'▼'}</span>
             </div>
             <div class="inv-setor-body ${setorOpen?'open':''}" id="inv-setor-${esc(setorKey)}">
-              ${notasSetor.length ? notasSetor.map(n => {
-                // verifica se esta nota aparece no resultado da conferência
+              ${notasSetor.length ? notasSetor.map(n => {                // verifica se esta nota aparece no resultado da conferência
                 const itemConf = confItensSetor.find(i=>i.notaFiscal===n.notaFiscal);
                 const confIcon = itemConf
                   ? (itemConf.resultado==='ok'?'<span title="Verificada fisicamente" style="color:var(--ok)">✅</span>'
@@ -2560,6 +2669,7 @@ function renderInventarios() {
                 </div>`;
               }).join('')
               : `<div style="padding:8px 0;font-size:12px;color:var(--faint)">Nenhuma nota neste setor.</div>`}
+              ${!enc?`<button class="btn btn-primary btn-sm" data-inv-abrir-lote="${esc(setorKey)}" data-inv-lote-id2="${esc(inv.id)}" data-inv-lote-setor2="${esc(setor)}" style="margin-top:6px;width:100%">+ Adicionar Notas</button>`:''}
               ${confSetor&&confItensSetor.filter(i=>i.resultado==='divergencia').length?`
                 <div style="margin-top:8px;padding:8px;background:var(--badB);border-radius:var(--rs)">
                   <div style="font-size:11px;font-weight:800;color:var(--bad);margin-bottom:4px">🔴 FÍSICAS NÃO REGISTRADAS:</div>
@@ -2576,10 +2686,28 @@ function renderInventarios() {
 
 // Acordeão do inventário e setores
 document.getElementById('listaInventarios').addEventListener('click', e => {
-  // toggle inventário
+  // apagar inventário
+  const apagarBtn = e.target.closest('[data-inv-apagar]');
+  if (apagarBtn) {
+    pedirSenhaAdm(() => {
+      if (!confirm('Apagar este inventário e todas as suas notas permanentemente?')) return;
+      const id = apagarBtn.dataset.invApagar;
+      state.inventarios = state.inventarios.filter(i=>i.id!==id);
+      state.invNotas = state.invNotas.filter(n=>n.inventarioId!==id);
+      state.conferencias = state.conferencias.filter(c=>c.inventarioId!==id);
+      state.confItens = state.confItens.filter(i=>i.inventarioId!==id);
+      if (invAberto===id) invAberto=null;
+      cacheGuardar(); renderInventarios();
+      // não há ação de apagar inventário no backend ainda — registra movimento
+      post({acao:'registrarMovimento',tipo:'inventario_apagado',conferente:getNome(),detalhe:'Inventário apagado'}).catch(()=>{});
+      banner('ok','Inventário apagado.');
+    });
+    return;
+  }
   const togBtn = e.target.closest('[data-inv-toggle]');
-  if (togBtn && !e.target.closest('[data-inv-reabrir]') && !e.target.closest('[data-inv-setor]') && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]') && !e.target.closest('[data-foto-view]') && !e.target.closest('[data-inv-conferir]')) {
+  if (togBtn && !e.target.closest('[data-inv-reabrir]') && !e.target.closest('[data-inv-apagar]')) {
     invAberto = invAberto === togBtn.dataset.invToggle ? null : togBtn.dataset.invToggle;
+    invSetorAberto = null;
     renderInventarios(); return;
   }
   // foto
@@ -2604,20 +2732,20 @@ document.getElementById('listaInventarios').addEventListener('click', e => {
     abrirModalConferencia(confBtn.dataset.invConfId, confBtn.dataset.invConfSetor);
     return;
   }
-  // toggle setor (clique no cabeçalho) — também abre modal de lote se não encerrado
+  // toggle setor — só expande/colapsa, NUNCA abre modal automático
   const setorHdr = e.target.closest('[data-inv-setor]');
   if (setorHdr && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]') && !e.target.closest('[data-inv-conferir]')) {
     const setorKey = setorHdr.dataset.invSetor;
-    const invId = setorHdr.dataset.invLoteId;
-    const setor = setorHdr.dataset.invLoteSetor;
-    const inv = state.inventarios.find(i=>i.id===invId);
-    // expande/colapsa
     invSetorAberto = invSetorAberto === setorKey ? null : setorKey;
     renderInventarios();
-    // se expandiu e inventário não encerrado, abre modal de lote
-    if (invSetorAberto === setorKey && inv && !invEncerradoAutomatico(inv)) {
-      setTimeout(() => abrirModalLote(invId, setor), 120);
-    }
+    return;
+  }
+  // botão + Adicionar Notas dentro do setor expandido
+  const abrirLoteBtn = e.target.closest('[data-inv-abrir-lote]');
+  if (abrirLoteBtn) {
+    const inv = state.inventarios.find(i=>i.id===abrirLoteBtn.dataset.invLoteId2);
+    if (inv && invEncerradoAutomatico(inv)) { banner('bad','Inventário encerrado.'); return; }
+    abrirModalLote(abrirLoteBtn.dataset.invLoteId2, abrirLoteBtn.dataset.invLoteSetor2);
     return;
   }
   // editar nota
@@ -2720,9 +2848,15 @@ document.getElementById('btnSalvarInvNota').addEventListener('click', () => {
 document.getElementById('btnFecharInvNota').addEventListener('click', () => fecharModal('modalInvNota'));
 document.getElementById('modalInvNota').addEventListener('click', e => { if(e.target===document.getElementById('modalInvNota')) fecharModal('modalInvNota'); });
 
-// Criar novo inventário
+// Criar novo inventário — máximo 1 por dia
 document.getElementById('btnNovoInventario').addEventListener('click', () => {
   if (!getNome()) { banner('bad','Configure seu nome primeiro.'); abrirModalConfig(); return; }
+  const hoje = new Date().toLocaleDateString('pt-BR');
+  const jaTemHoje = state.inventarios.some(i => new Date(i.dataHora).toLocaleDateString('pt-BR') === hoje);
+  if (jaTemHoje) {
+    banner('bad', `Já existe um inventário criado hoje (${hoje}). Só é permitido 1 por dia.`);
+    return;
+  }
   const agora = new Date();
   const tituloAuto = 'Inventário ' + agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   const novo = {id:uid(), titulo:tituloAuto, conferente:getNome(), dataHora:agora.toISOString(), encerrado:false};
@@ -2808,11 +2942,15 @@ document.getElementById('btnSalvarInvLote').addEventListener('click', () => {
     .split('\n').map(l=>l.trim()).filter(Boolean);
   if (!linhas.length) { banner('bad','Nenhuma nota digitada.'); return; }
   const agora = new Date().toISOString();
-  const novas = linhas.map(nf => ({
-    id:uid(), inventarioId:invLoteInvId, notaFiscal:nf,
-    setor:invLoteSetor, volumes:'', fotos:[], status:'',
-    conferente:getNome(), dataHora:agora
-  }));
+  const novas = linhas.map(linha => {
+    // suporta formato "nota volumes" separado por espaço
+    const partes = linha.trim().split(/\s+/);
+    const nf = partes[0];
+    const volumes = partes.length>1 ? partes[1] : '';
+    return { id:uid(), inventarioId:invLoteInvId, notaFiscal:nf,
+      setor:invLoteSetor, volumes, fotos:[], status:'',
+      conferente:getNome(), dataHora:agora };
+  });
   novas.forEach(n => state.invNotas.push(n));
   cacheGuardar(); renderInventarios();
   novas.forEach(n => post({acao:'adicionarInvNota', dados:n}).catch(()=>{}));
@@ -2951,6 +3089,473 @@ document.getElementById('btnRefazerConf').addEventListener('click', () => {
 });
 document.getElementById('btnFecharConf').addEventListener('click', () => fecharModal('modalConferencia'));
 document.getElementById('modalConferencia').addEventListener('click', e => { if(e.target===document.getElementById('modalConferencia')) fecharModal('modalConferencia'); });
+
+// ===== RELATÓRIOS DE INVENTÁRIO =====
+let relAbaAtual = 'resumo';
+let relInvSelecionado = null;
+let relChartPizza = null;
+let relChartBarras = null;
+let relChartComp = null;
+
+function abrirRelatorioInventario() {
+  relAbaAtual = 'resumo';
+  relInvSelecionado = null;
+  document.querySelectorAll('.rel-inv-tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.relTab==='resumo');
+    t.style.borderBottomColor = t.dataset.relTab==='resumo' ? 'var(--accentL)' : 'transparent';
+    t.style.color = t.dataset.relTab==='resumo' ? 'var(--text)' : 'var(--faint)';
+  });
+  renderRelInvCorpo();
+  document.getElementById('modalRelInv').classList.remove('hidden');
+}
+
+document.getElementById('btnRelatorioInventario').addEventListener('click', abrirRelatorioInventario);
+document.getElementById('btnFecharRelInv').addEventListener('click', () => fecharModal('modalRelInv'));
+document.getElementById('modalRelInv').addEventListener('click', e => { if(e.target===document.getElementById('modalRelInv')) fecharModal('modalRelInv'); });
+
+document.querySelectorAll('.rel-inv-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    relAbaAtual = tab.dataset.relTab;
+    document.querySelectorAll('.rel-inv-tab').forEach(t=>{
+      t.classList.toggle('active', t===tab);
+      t.style.borderBottomColor = t===tab ? 'var(--accentL)' : 'transparent';
+      t.style.color = t===tab ? 'var(--text)' : 'var(--faint)';
+    });
+    if (relChartPizza) { relChartPizza.destroy(); relChartPizza=null; }
+    if (relChartBarras) { relChartBarras.destroy(); relChartBarras=null; }
+    if (relChartComp) { relChartComp.destroy(); relChartComp=null; }
+    renderRelInvCorpo();
+  });
+});
+
+function renderRelInvCorpo() {
+  const el = document.getElementById('relInvCorpo');
+  if (relAbaAtual==='resumo') renderRelResumo(el);
+  else renderRelComparar(el);
+}
+
+function renderRelResumo(el) {
+  const invs = [...state.inventarios].sort((a,b)=>new Date(b.dataHora)-new Date(a.dataHora));
+  if (!invs.length) { el.innerHTML=empty('Nenhum inventário disponível.'); return; }
+
+  const selectorOpts = invs.map(i=>`<option value="${esc(i.id)}" ${relInvSelecionado===i.id?'selected':''}>${esc(i.titulo)}</option>`).join('');
+  if (!relInvSelecionado) relInvSelecionado = invs[0].id;
+  const inv = invs.find(i=>i.id===relInvSelecionado) || invs[0];
+  relInvSelecionado = inv.id;
+
+  const notas = state.invNotas.filter(n=>n.inventarioId===inv.id);
+  const confs = state.conferencias.filter(c=>c.inventarioId===inv.id);
+  const itens = state.confItens.filter(i=>i.inventarioId===inv.id);
+  const total = notas.length;
+  const conferidas = itens.filter(i=>i.resultado==='ok').length;
+  const pendentes = itens.filter(i=>i.resultado==='pendente').length;
+  const divs = itens.filter(i=>i.resultado==='divergencia').length;
+  const cruzados = itens.filter(i=>i.resultado==='cruzado').length;
+  const pct = total ? Math.round(conferidas/total*100) : 0;
+  const setoresConferidos = [...new Set(confs.map(c=>c.setor))].length;
+
+  // insights automáticos
+  const insights = [];
+  if (total===0) insights.push('Nenhuma nota registrada neste inventário.');
+  if (pct===100) insights.push('✅ Todos os itens foram conferidos com sucesso!');
+  if (divs>0) {
+    const setorMaisDivs = SETORES_LISTA.map(s=>({s,n:itens.filter(i=>i.resultado==='divergencia'&&(i.setorEncontrado===s||i.setorRegistrado===s)).length})).sort((a,b)=>b.n-a.n)[0];
+    if (setorMaisDivs?.n>0) insights.push(`⚠️ ${setorMaisDivs.s} concentra o maior número de divergências (${setorMaisDivs.n}).`);
+  }
+  if (cruzados>0) insights.push(`🔀 ${cruzados} nota${cruzados>1?'s foram encontradas':' foi encontrada'} em setor diferente do registrado.`);
+  if (pendentes>0) insights.push(`📋 ${pendentes} nota${pendentes>1?'s ainda não foram':'s ainda não foi'} encontradas fisicamente.`);
+  const setoresVazios = SETORES_LISTA.filter(s=>notas.filter(n=>n.setor===s).length===0).length;
+  if (setoresVazios>0) insights.push(`ℹ️ ${setoresVazios} setor${setoresVazios>1?'es não possuem':'não possui'} notas registradas.`);
+  const invAnterior = invs.find(i=>new Date(i.dataHora)<new Date(inv.dataHora));
+  if (invAnterior) {
+    const itensAnt = state.confItens.filter(i=>i.inventarioId===invAnterior.id);
+    const divsAnt = itensAnt.filter(i=>i.resultado==='divergencia').length;
+    if (divsAnt>0 && divs<divsAnt) insights.push(`📈 Divergências reduziram em relação ao inventário anterior (${divsAnt}→${divs}).`);
+    else if (divs>divsAnt) insights.push(`📉 Divergências aumentaram em relação ao inventário anterior (${divsAnt}→${divs}).`);
+  }
+
+  // tabela por setor
+  const tabelaSetores = SETORES_LISTA.map(s=>{
+    const ns = notas.filter(n=>n.setor===s).length;
+    const conf = confs.find(c=>c.setor===s);
+    const it = conf ? state.confItens.filter(i=>i.conferenciaId===conf.id) : [];
+    const ok = it.filter(i=>i.resultado==='ok').length;
+    const pend = it.filter(i=>i.resultado==='pendente').length;
+    const div = it.filter(i=>i.resultado==='divergencia').length;
+    const cruz = it.filter(i=>i.resultado==='cruzado').length;
+    if (!ns&&!it.length) return '';
+    return `<tr>
+      <td style="font-weight:700">${esc(s)}</td>
+      <td style="text-align:center">${ns}</td>
+      <td style="text-align:center;color:var(--ok)">${ok||'—'}</td>
+      <td style="text-align:center;color:var(--warn)">${pend||'—'}</td>
+      <td style="text-align:center;color:var(--bad)">${div||'—'}</td>
+      <td style="text-align:center;color:var(--info)">${cruz||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:5px">Inventário</label>
+      <select class="form-input" id="relInvSelector" style="max-width:100%">${selectorOpts}</select>
+    </div>
+    <div class="rel-inv-kpi-grid">
+      <div class="rel-inv-kpi"><div class="rel-inv-kpi-icon">📦</div><div class="rel-inv-kpi-val">${total}</div><div class="rel-inv-kpi-lbl">Total de notas</div></div>
+      <div class="rel-inv-kpi"><div class="rel-inv-kpi-icon">✅</div><div class="rel-inv-kpi-val" style="color:var(--ok)">${conferidas}</div><div class="rel-inv-kpi-lbl">Conferidas</div></div>
+      <div class="rel-inv-kpi"><div class="rel-inv-kpi-icon">⚠️</div><div class="rel-inv-kpi-val" style="color:var(--warn)">${pendentes}</div><div class="rel-inv-kpi-lbl">Pendentes</div></div>
+      <div class="rel-inv-kpi"><div class="rel-inv-kpi-icon">🔴</div><div class="rel-inv-kpi-val" style="color:var(--bad)">${divs}</div><div class="rel-inv-kpi-lbl">Divergências</div></div>
+      <div class="rel-inv-kpi"><div class="rel-inv-kpi-icon">🔀</div><div class="rel-inv-kpi-val" style="color:var(--info)">${cruzados}</div><div class="rel-inv-kpi-lbl">Cruzadas</div></div>
+      <div class="rel-inv-kpi"><div class="rel-inv-kpi-icon">📊</div><div class="rel-inv-kpi-val">${pct}%</div><div class="rel-inv-kpi-lbl">Concluído</div></div>
+      <div class="rel-inv-kpi"><div class="rel-inv-kpi-icon">🗂️</div><div class="rel-inv-kpi-val">${setoresConferidos}</div><div class="rel-inv-kpi-lbl">Setores conferidos</div></div>
+    </div>
+    ${insights.length?`<div class="rel-inv-sec"><div class="rel-inv-sec-tit">💡 Insights Automáticos</div>${insights.map(i=>`<div class="rel-inv-insight">${i}</div>`).join('')}</div>`:''}
+    <div class="rel-inv-sec"><div class="rel-inv-sec-tit">📈 Status das Notas</div><canvas id="relChartPizzaCanvas" height="200"></canvas></div>
+    <div class="rel-inv-sec"><div class="rel-inv-sec-tit">🏭 Notas por Setor</div><canvas id="relChartBarrasCanvas" height="220"></canvas></div>
+    ${tabelaSetores?`<div class="rel-inv-sec"><div class="rel-inv-sec-tit">📋 Detalhe por Setor</div><div style="overflow-x:auto"><table class="rel-inv-tabela"><thead><tr><th>Setor</th><th>Notas</th><th>Conf.</th><th>Pend.</th><th>Div.</th><th>Cruz.</th></tr></thead><tbody>${tabelaSetores}</tbody></table></div></div>`:''}
+  `;
+
+  document.getElementById('relInvSelector').addEventListener('change', e => {
+    relInvSelecionado = e.target.value;
+    if (relChartPizza) { relChartPizza.destroy(); relChartPizza=null; }
+    if (relChartBarras) { relChartBarras.destroy(); relChartBarras=null; }
+    renderRelInvCorpo();
+  });
+
+  // gráfico pizza
+  const ctxP = document.getElementById('relChartPizzaCanvas')?.getContext('2d');
+  if (ctxP && typeof Chart!=='undefined') {
+    relChartPizza = new Chart(ctxP, {type:'doughnut',data:{labels:['Conferidas','Pendentes','Divergências','Cruzadas','Sem conferência'],datasets:[{data:[conferidas,pendentes,divs,cruzados,Math.max(0,total-conferidas-pendentes-divs-cruzados)],backgroundColor:['#22c55e','#f59e0b','#ef4444','#3b82f6','#3d5275'],borderWidth:0}]},options:{plugins:{legend:{labels:{color:'var(--text)',font:{size:11}}}},cutout:'65%',responsive:true,maintainAspectRatio:false}});
+  }
+
+  // gráfico barras por setor
+  const setoresComNotas = SETORES_LISTA.filter(s=>notas.filter(n=>n.setor===s).length>0);
+  const ctxB = document.getElementById('relChartBarrasCanvas')?.getContext('2d');
+  if (ctxB && typeof Chart!=='undefined' && setoresComNotas.length) {
+    relChartBarras = new Chart(ctxB, {type:'bar',data:{labels:setoresComNotas.map(s=>s.length>12?s.slice(0,12)+'…':s),datasets:[{label:'Notas',data:setoresComNotas.map(s=>notas.filter(n=>n.setor===s).length),backgroundColor:'rgba(47,104,232,.7)',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'var(--dim)',font:{size:10}},grid:{display:false}},y:{ticks:{color:'var(--dim)'},grid:{color:'rgba(255,255,255,.05)'}}},responsive:true,maintainAspectRatio:false}});
+  }
+}
+
+function renderRelComparar(el) {
+  const invs = [...state.inventarios].sort((a,b)=>new Date(b.dataHora)-new Date(a.dataHora));
+  if (invs.length<2) { el.innerHTML=`<div style="color:var(--faint);padding:20px;text-align:center">São necessários pelo menos 2 inventários para comparar.</div>`; return; }
+
+  const selecionados = window._relCompSel || [];
+  el.innerHTML = `
+    <div class="rel-inv-sec">
+      <div class="rel-inv-sec-tit">Selecione os inventários</div>
+      ${invs.map(i=>`
+        <label class="rel-comp-check">
+          <input type="checkbox" class="rel-comp-inv-cb" value="${esc(i.id)}" ${selecionados.includes(i.id)?'checked':''}>
+          <div><div style="font-weight:700;font-size:13px">${esc(i.titulo)}</div><div style="font-size:11.5px;color:var(--faint)">${fmtDT(i.dataHora)} · ${state.invNotas.filter(n=>n.inventarioId===i.id).length} notas</div></div>
+        </label>`).join('')}
+      <button class="btn btn-primary" id="btnExecutarComparacao" style="margin-top:10px">Comparar Inventários</button>
+    </div>
+    <div id="relCompResultado"></div>
+  `;
+
+  document.getElementById('btnExecutarComparacao').addEventListener('click', () => {
+    const sel = [...document.querySelectorAll('.rel-comp-inv-cb:checked')].map(cb=>cb.value);
+    window._relCompSel = sel;
+    if (sel.length<2) { banner('bad','Selecione pelo menos 2 inventários.'); return; }
+    const invsSel = sel.map(id=>state.inventarios.find(i=>i.id===id)).filter(Boolean);
+    const res = document.getElementById('relCompResultado');
+
+    // todas as notas fiscais únicas nos inventários selecionados
+    const todasNFs = [...new Set(sel.flatMap(id=>state.invNotas.filter(n=>n.inventarioId===id).map(n=>n.notaFiscal)))].sort();
+
+    // tabela comparativa por nota
+    const tabelaLinhas = todasNFs.map(nf => {
+      const colunas = invsSel.map(inv => {
+        const nota = state.invNotas.find(n=>n.inventarioId===inv.id&&n.notaFiscal===nf);
+        return nota ? `<td class="cel-ok">${nota.setor||'—'}</td>` : `<td class="cel-dif">—</td>`;
+      }).join('');
+      return `<tr><td style="font-weight:700">${esc(nf)}</td>${colunas}</tr>`;
+    }).join('');
+
+    // dashboard comparativo
+    const dashComp = invsSel.map(inv => {
+      const notas = state.invNotas.filter(n=>n.inventarioId===inv.id);
+      const itens = state.confItens.filter(i=>i.inventarioId===inv.id);
+      const ok = itens.filter(i=>i.resultado==='ok').length;
+      const pct = notas.length ? Math.round(ok/notas.length*100) : 0;
+      const divs = itens.filter(i=>i.resultado==='divergencia').length;
+      return {titulo:inv.titulo, total:notas.length, ok, pct, divs};
+    });
+    const melhor = [...dashComp].sort((a,b)=>b.pct-a.pct)[0];
+    const piorDiv = [...dashComp].sort((a,b)=>b.divs-a.divs)[0];
+
+    res.innerHTML = `
+      <div class="rel-inv-sec" style="margin-top:14px">
+        <div class="rel-inv-sec-tit">📊 Dashboard Comparativo</div>
+        <div class="rel-inv-kpi-grid">
+          ${dashComp.map(d=>`<div class="rel-inv-kpi"><div class="rel-inv-kpi-val">${d.pct}%</div><div class="rel-inv-kpi-lbl" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(d.titulo)}">${esc(d.titulo.replace('Inventário ',''))}</div><div style="font-size:11px;color:var(--faint)">${d.ok}/${d.total} conf.</div></div>`).join('')}
+        </div>
+        <div class="rel-inv-insight">🏆 Maior índice de acerto: <strong>${esc(melhor.titulo)}</strong> (${melhor.pct}%)</div>
+        ${piorDiv.divs>0?`<div class="rel-inv-insight" style="border-color:var(--bad)">🔴 Mais divergências: <strong>${esc(piorDiv.titulo)}</strong> (${piorDiv.divs})</div>`:''}
+        <div style="margin-top:12px"><canvas id="relChartCompCanvas" height="200"></canvas></div>
+      </div>
+      <div class="rel-inv-sec">
+        <div class="rel-inv-sec-tit">📋 Comparação por Nota Fiscal</div>
+        <div style="overflow-x:auto"><table class="rel-inv-tabela">
+          <thead><tr><th>Nota</th>${invsSel.map(i=>`<th>${esc(i.titulo.replace('Inventário ',''))}</th>`).join('')}</tr></thead>
+          <tbody>${tabelaLinhas}</tbody>
+        </table></div>
+      </div>
+    `;
+
+    // gráfico comparativo
+    setTimeout(() => {
+      const ctxC = document.getElementById('relChartCompCanvas')?.getContext('2d');
+      if (ctxC && typeof Chart!=='undefined') {
+        if (relChartComp) relChartComp.destroy();
+        relChartComp = new Chart(ctxC, {type:'bar',data:{
+          labels:dashComp.map(d=>d.titulo.replace('Inventário ','')),
+          datasets:[
+            {label:'Conferidas',data:dashComp.map(d=>d.ok),backgroundColor:'rgba(34,197,94,.7)',borderRadius:4},
+            {label:'Divergências',data:dashComp.map(d=>d.divs),backgroundColor:'rgba(239,68,68,.7)',borderRadius:4}
+          ]},options:{plugins:{legend:{labels:{color:'var(--text)',font:{size:11}}}},scales:{x:{ticks:{color:'var(--dim)'},grid:{display:false}},y:{ticks:{color:'var(--dim)'},grid:{color:'rgba(255,255,255,.05)'}}},responsive:true,maintainAspectRatio:false}
+        });
+      }
+    }, 80);
+  });
+}
+
+// PDF e CSV do relatório
+document.getElementById('btnRelInvPDF').addEventListener('click', () => window.print());
+document.getElementById('btnRelInvCSV').addEventListener('click', () => {
+  const inv = state.inventarios.find(i=>i.id===relInvSelecionado);
+  if (!inv) { banner('bad','Selecione um inventário.'); return; }
+  const notas = state.invNotas.filter(n=>n.inventarioId===inv.id);
+  const linhas = [['Nota Fiscal','Setor','Volumes','Status','Conferente','Data'].join(',')];
+  notas.forEach(n => linhas.push([n.notaFiscal,n.setor,n.volumes,n.status,n.conferente,n.dataHora].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')));
+  const blob = new Blob([linhas.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=`inventario-${inv.titulo.replace(/[^a-z0-9]/gi,'-')}.csv`; a.click();
+  URL.revokeObjectURL(url);
+});
+
+// ===== MÓDULO RELATÓRIO DE INVENTÁRIO =====
+let relCharts = {}; // instâncias Chart.js para destruir antes de recriar
+
+function abrirModalRelatorio() {
+  // popula selects com inventários disponíveis
+  const invs = [...state.inventarios].sort((a,b)=>new Date(b.dataHora)-new Date(a.dataHora));
+  const sel = document.getElementById('relInvSelect');
+  sel.innerHTML = '<option value="">— Selecione —</option>' + invs.map(i=>`<option value="${esc(i.id)}">${esc(i.titulo)}</option>`).join('');
+  // lista de checkboxes para comparação
+  document.getElementById('compInvLista').innerHTML = invs.map(i=>`
+    <div class="comp-inv-row">
+      <input type="checkbox" id="compChk_${esc(i.id)}" value="${esc(i.id)}" style="width:16px;height:16px;accent-color:var(--accentL)">
+      <label for="compChk_${esc(i.id)}" style="flex:1;cursor:pointer">${esc(i.titulo)} · ${esc(i.conferente||'')}
+        <span style="color:var(--faint);font-size:11px"> · ${state.invNotas.filter(n=>n.inventarioId===i.id).length} notas</span>
+      </label>
+    </div>`).join('');
+  document.getElementById('relResumoCorpo').innerHTML = '';
+  document.getElementById('relCompararCorpo').innerHTML = '';
+  // ativa aba resumo
+  document.querySelectorAll('.rel-tab').forEach(t=>t.classList.toggle('active',t.dataset.relTab==='resumo'));
+  document.getElementById('relTabResumo').classList.add('active');
+  document.getElementById('relTabComparar').classList.remove('active');
+  document.getElementById('modalRelatorio').classList.remove('hidden');
+}
+
+function destruirCharts() {
+  Object.values(relCharts).forEach(c=>{try{c.destroy();}catch(e){}});
+  relCharts = {};
+}
+
+function gerarResumoInventario(invId) {
+  destruirCharts();
+  const inv = state.inventarios.find(i=>i.id===invId);
+  if (!inv) return;
+  const notas = state.invNotas.filter(n=>n.inventarioId===invId);
+  const confs = state.conferencias.filter(c=>c.inventarioId===invId);
+  const itens = state.confItens.filter(i=>i.inventarioId===invId);
+
+  const total = notas.length;
+  const conferidas = itens.filter(i=>i.resultado==='ok'||i.resultado==='cruzado').length;
+  const pendentes = itens.filter(i=>i.resultado==='pendente').length;
+  const divergencias = itens.filter(i=>i.resultado==='divergencia').length;
+  const pct = total>0 ? Math.round((conferidas/total)*100) : 0;
+
+  // KPIs
+  let html = `<div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-icon">📦</div><div class="kpi-val">${total}</div><div class="kpi-lbl">Total de notas</div></div>
+    <div class="kpi-card"><div class="kpi-icon">✅</div><div class="kpi-val" style="color:var(--ok)">${conferidas}</div><div class="kpi-lbl">Conferidas</div></div>
+    <div class="kpi-card"><div class="kpi-icon">⚠️</div><div class="kpi-val" style="color:var(--warn)">${pendentes}</div><div class="kpi-lbl">Pendentes</div></div>
+    <div class="kpi-card"><div class="kpi-icon">🔴</div><div class="kpi-val" style="color:var(--bad)">${divergencias}</div><div class="kpi-lbl">Divergências</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📊</div><div class="kpi-val">${pct}%</div><div class="kpi-lbl">Concluído</div></div>
+    <div class="kpi-card"><div class="kpi-icon">👤</div><div class="kpi-val" style="font-size:14px">${esc(inv.conferente||'?')}</div><div class="kpi-lbl">Responsável</div></div>
+  </div>`;
+
+  // Gráficos
+  html += `<div class="chart-wrap"><div class="chart-titulo">Status das Notas</div><canvas id="chartPizza" height="180"></canvas></div>`;
+  html += `<div class="chart-wrap"><div class="chart-titulo">Notas por Setor</div><canvas id="chartBarras" height="220"></canvas></div>`;
+
+  // Por setor
+  html += `<div class="sec-hdr" style="margin-top:4px"><span class="sec-title">Detalhamento por Setor</span></div>`;
+  SETORES_LISTA.forEach(setor => {
+    const ns = notas.filter(n=>n.setor===setor);
+    const itensSetor = itens.filter(i=>{
+      const confSetor = confs.find(c=>c.setor===setor);
+      return confSetor && i.conferenciaId===confSetor.id;
+    });
+    if (!ns.length && !itensSetor.length) return;
+    const ok = itensSetor.filter(i=>i.resultado==='ok'||i.resultado==='cruzado').length;
+    const pend = itensSetor.filter(i=>i.resultado==='pendente').length;
+    const div = itensSetor.filter(i=>i.resultado==='divergencia').length;
+    const conf = confs.find(c=>c.setor===setor);
+    html += `<div class="card" style="margin-bottom:7px">
+      <div class="card-top"><span class="card-title" style="flex:1">${esc(setor)}</span>
+        ${conf?`<span class="badge b-ok">Conferido</span>`:`<span class="badge b-none">Não conferido</span>`}
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:12.5px">
+        <span>📦 ${ns.length} nota${ns.length!==1?'s':''}</span>
+        ${conf?`<span style="color:var(--ok)">✅ ${ok}</span><span style="color:var(--warn)">⚠️ ${pend}</span><span style="color:var(--bad)">🔴 ${div}</span>`:''}
+      </div>
+    </div>`;
+  });
+
+  // Insights automáticos
+  html += `<div class="sec-hdr" style="margin-top:8px"><span class="sec-title">Insights Automáticos</span></div>`;
+  const insights = [];
+  if (pct===100) insights.push({icon:'🏆',txt:'Inventário conferido 100% — nenhuma pendência.'});
+  if (pct<50&&confs.length>0) insights.push({icon:'⚠️',txt:`Apenas ${pct}% das notas foram conferidas fisicamente.`});
+  if (divergencias>0) {
+    const setorMaisDivs = SETORES_LISTA.map(s=>{
+      const c=confs.find(x=>x.setor===s);
+      return {s,n:c?itens.filter(i=>i.conferenciaId===c.id&&i.resultado==='divergencia').length:0};
+    }).sort((a,b)=>b.n-a.n)[0];
+    if (setorMaisDivs.n>0) insights.push({icon:'🔴',txt:`${esc(setorMaisDivs.s)} apresentou a maior quantidade de divergências (${setorMaisDivs.n}).`});
+  }
+  const statusCounts = {};
+  notas.forEach(n=>{statusCounts[n.status||'']=(statusCounts[n.status||'']||0)+1;});
+  const maisFreq = Object.entries(statusCounts).sort((a,b)=>b[1]-a[1])[0];
+  if (maisFreq&&maisFreq[0]) insights.push({icon:'📋',txt:`Status mais frequente: ${STATUS_LABELS[maisFreq[0]]||maisFreq[0]} (${maisFreq[1]} nota${maisFreq[1]>1?'s':''}).`});
+  const setorMaisNotas = SETORES_LISTA.map(s=>({s,n:notas.filter(n=>n.setor===s).length})).sort((a,b)=>b.n-a.n)[0];
+  if (setorMaisNotas?.n>0) {
+    const pctSetor = Math.round((setorMaisNotas.n/total)*100);
+    insights.push({icon:'📍',txt:`${esc(setorMaisNotas.s)} concentrou ${pctSetor}% das notas do inventário.`});
+  }
+  if (confs.length===0) insights.push({icon:'ℹ️',txt:'Nenhuma conferência física realizada ainda neste inventário.'});
+  if (!insights.length) insights.push({icon:'✅',txt:'Inventário dentro do esperado.'});
+  html += insights.map(i=>`<div class="insight-item"><span class="insight-icon">${i.icon}</span><span>${i.txt}</span></div>`).join('');
+
+  // botão exportar CSV
+  html += `<button class="btn btn-secondary" id="btnExportarCSV" style="margin-top:14px">⬇️ Exportar CSV</button>`;
+
+  document.getElementById('relResumoCorpo').innerHTML = html;
+
+  // renderiza gráficos após inserir no DOM
+  setTimeout(() => {
+    if (typeof Chart === 'undefined') return;
+    const ctxP = document.getElementById('chartPizza')?.getContext('2d');
+    if (ctxP) relCharts.pizza = new Chart(ctxP, {
+      type:'doughnut',
+      data:{labels:['Conferidas','Pendentes','Divergências','Sem conf.'],
+        datasets:[{data:[conferidas,pendentes,divergencias,Math.max(0,total-conferidas-pendentes-divergencias)],
+          backgroundColor:['#22c55e','#f59e0b','#ef4444','#3d5275'],borderWidth:0}]},
+      options:{plugins:{legend:{position:'bottom',labels:{color:'var(--text)',font:{size:11}}}},cutout:'65%'}
+    });
+    const setoresComNotas = SETORES_LISTA.filter(s=>notas.filter(n=>n.setor===s).length>0);
+    const ctxB = document.getElementById('chartBarras')?.getContext('2d');
+    if (ctxB) relCharts.barras = new Chart(ctxB, {
+      type:'bar',
+      data:{labels:setoresComNotas.map(s=>s.length>14?s.slice(0,14)+'…':s),
+        datasets:[{label:'Notas',data:setoresComNotas.map(s=>notas.filter(n=>n.setor===s).length),
+          backgroundColor:'#2f68e8',borderRadius:4}]},
+      options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'var(--dim)'},grid:{color:'var(--border)'}},y:{ticks:{color:'var(--text)',font:{size:10}},grid:{display:false}}}}
+    });
+  }, 100);
+
+  // handler CSV
+  setTimeout(() => {
+    document.getElementById('btnExportarCSV')?.addEventListener('click', () => {
+      let csv = 'Nota Fiscal,Setor,Volumes,Status,Conferente,Data\n';
+      notas.forEach(n => { csv += `${n.notaFiscal},${n.setor},${n.volumes},${STATUS_LABELS[n.status]||n.status||'Armazém'},${n.conferente},${fmtDT(n.dataHora)}\n`; });
+      const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download=`${inv.titulo.replace(/\s+/g,'_')}.csv`; a.click();
+      URL.revokeObjectURL(url);
+    });
+  }, 150);
+}
+
+function gerarComparacao(invIds) {
+  destruirCharts();
+  if (invIds.length<2) { document.getElementById('relCompararCorpo').innerHTML=`<div class="card-meta" style="padding:8px">Selecione pelo menos 2 inventários.</div>`; return; }
+  const invsSel = invIds.map(id=>state.inventarios.find(i=>i.id===id)).filter(Boolean);
+  const notasPorInv = invsSel.map(i=>state.invNotas.filter(n=>n.inventarioId===i.id));
+  const itensPorInv = invsSel.map(i=>state.confItens.filter(x=>x.inventarioId===i.id));
+
+  // KPIs comparativos
+  let html = `<div class="kpi-grid">` + invsSel.map((inv,idx)=>{
+    const notas = notasPorInv[idx];
+    const itens = itensPorInv[idx];
+    const conf = itens.filter(i=>i.resultado==='ok'||i.resultado==='cruzado').length;
+    const pct = notas.length>0?Math.round((conf/notas.length)*100):0;
+    return `<div class="kpi-card"><div class="kpi-icon">📋</div><div class="kpi-val">${pct}%</div><div class="kpi-lbl" style="font-size:9.5px">${esc(inv.titulo.replace('Inventário ',''))}</div></div>`;
+  }).join('') + `</div>`;
+
+  // gráfico barras comparativo
+  html += `<div class="chart-wrap"><div class="chart-titulo">Notas por Inventário</div><canvas id="chartComp" height="200"></canvas></div>`;
+
+  // tabela comparativa por nota fiscal
+  const todasNFs = [...new Set(notasPorInv.flat().map(n=>n.notaFiscal))].sort();
+  html += `<div class="sec-hdr"><span class="sec-title">Comparação por Nota Fiscal</span></div>`;
+  html += `<div style="overflow-x:auto"><table class="comp-table"><thead><tr><th>Nota</th>${invsSel.map(i=>`<th>${esc(i.titulo.replace('Inventário ',''))}</th>`).join('')}</tr></thead><tbody>`;
+  todasNFs.forEach(nf => {
+    const colunas = notasPorInv.map(notas => {
+      const n = notas.find(x=>x.notaFiscal===nf);
+      return n ? `<span class="comp-ok">${esc(n.setor||'?')}</span>` : `<span style="color:var(--faint)">—</span>`;
+    });
+    const presente = notasPorInv.filter(notas=>notas.find(x=>x.notaFiscal===nf)).length;
+    const diff = presente < invsSel.length;
+    html += `<tr style="${diff?'background:var(--badB)':''}"><td class="tnum">${esc(nf)}</td>${colunas.map(c=>`<td>${c}</td>`).join('')}</tr>`;
+  });
+  html += `</tbody></table></div>`;
+
+  document.getElementById('relCompararCorpo').innerHTML = html;
+
+  setTimeout(()=>{
+    if (typeof Chart === 'undefined') return;
+    const ctx = document.getElementById('chartComp')?.getContext('2d');
+    if (ctx) relCharts.comp = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels:invsSel.map(i=>i.titulo.replace('Inventário ','')),
+        datasets:[
+          {label:'Total notas',data:notasPorInv.map(n=>n.length),backgroundColor:'#2f68e8',borderRadius:4},
+          {label:'Conferidas',data:itensPorInv.map(it=>it.filter(i=>i.resultado==='ok'||i.resultado==='cruzado').length),backgroundColor:'#22c55e',borderRadius:4},
+          {label:'Divergências',data:itensPorInv.map(it=>it.filter(i=>i.resultado==='divergencia').length),backgroundColor:'#ef4444',borderRadius:4}
+        ]
+      },
+      options:{plugins:{legend:{position:'bottom',labels:{color:'var(--text)',font:{size:11}}}},scales:{x:{ticks:{color:'var(--dim)'},grid:{display:false}},y:{ticks:{color:'var(--dim)'},grid:{color:'var(--border)'}}}}
+    });
+  },100);
+}
+
+// Handlers do modal de relatório
+document.getElementById('btnRelatorioInventario').addEventListener('click', abrirModalRelatorio);
+document.getElementById('btnFecharRelatorio').addEventListener('click', ()=>{destruirCharts();document.getElementById('modalRelatorio').classList.add('hidden');});
+document.querySelectorAll('.rel-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.rel-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.rel-tab-pane').forEach(p=>p.classList.remove('active'));
+    document.getElementById('relTab'+tab.dataset.relTab.charAt(0).toUpperCase()+tab.dataset.relTab.slice(1)).classList.add('active');
+  });
+});
+document.getElementById('relInvSelect').addEventListener('change',e=>{
+  if (e.target.value) gerarResumoInventario(e.target.value);
+  else document.getElementById('relResumoCorpo').innerHTML='';
+});
+document.getElementById('btnCompararInv').addEventListener('click',()=>{
+  const ids=[...document.querySelectorAll('#compInvLista input[type=checkbox]:checked')].map(c=>c.value);
+  gerarComparacao(ids);
+});
+
+// ===== MÓDULO RELATÓRIO FIM =====
 
 // ===== TEMA CLARO/ESCURO =====
 const TEMA_KEY = 'risso_tema';
