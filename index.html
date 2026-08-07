@@ -435,6 +435,44 @@ body{overflow:hidden}
   #resumoReportContent{position:absolute;left:0;top:0;width:100%;margin:0;padding:0}
   .no-print{display:none!important}
 }
+
+/* ── MÓDULO COLETA ──────────────────────────────────────────── */
+.coleta-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:9px;overflow:hidden}
+.coleta-card-hdr{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 13px 8px}
+.coleta-card-empresa{font-weight:700;font-size:15px;color:var(--text)}
+.coleta-card-meta{font-size:12px;color:var(--dim);margin-top:2px}
+.coleta-card-body{padding:0 13px 12px;display:flex;gap:10px;flex-wrap:wrap}
+.coleta-stat{background:var(--surface2);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--dim)}
+.coleta-stat strong{display:block;font-size:15px;font-weight:700;color:var(--text)}
+.coleta-status-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.coleta-status-tag.em_andamento{background:rgba(var(--info-rgb,59,130,246),.15);color:var(--info,#3b82f6)}
+.coleta-status-tag.finalizada{background:rgba(var(--ok-rgb,34,197,94),.15);color:var(--ok,#22c55e)}
+.coleta-status-tag.pausada{background:rgba(var(--warn-rgb,234,179,8),.15);color:var(--warn,#eab308)}
+.coleta-nota-row{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border-bottom:1px solid var(--border)}
+.coleta-nota-row:last-child{border-bottom:none}
+.coleta-nota-nf{font-weight:700;font-size:14px;color:var(--text)}
+.coleta-nota-meta{font-size:12px;color:var(--dim);margin-top:1px}
+.avaria-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--bad,#ef4444);background:rgba(239,68,68,.12);padding:2px 8px;border-radius:10px;margin-top:3px}
+.coleta-nota-actions{display:flex;gap:6px;margin-left:auto;flex-shrink:0}
+.coleta-detail-hdr{padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+.coleta-detail-empresa{font-size:18px;font-weight:800;color:var(--text)}
+.coleta-detail-meta{font-size:12px;color:var(--dim);margin-top:4px;line-height:1.6}
+.coleta-hist-item{display:flex;gap:10px;padding:8px 0;font-size:12px;border-bottom:1px solid var(--border)}
+.coleta-hist-item:last-child{border-bottom:none}
+.coleta-hist-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:3px}
+.coleta-hist-txt{color:var(--dim);line-height:1.5}
+.coleta-hist-txt strong{color:var(--text)}
+/* ── COMPARTILHAR ───────────────────────────────────────────── */
+.btn-share{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border2);border-radius:var(--rs);padding:6px 12px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer;white-space:nowrap}
+.btn-share:active{background:var(--surface2)}
+.share-sheet{padding:16px}
+.share-sheet-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.share-sheet-sub{font-size:12px;color:var(--dim);margin-bottom:14px}
+.share-preview{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:12px;font-size:12px;color:var(--dim);white-space:pre-wrap;max-height:200px;overflow-y:auto;margin-bottom:14px;line-height:1.6}
+.share-actions{display:flex;gap:8px;flex-wrap:wrap}
+.share-btn-wa{display:flex;align-items:center;justify-content:center;gap:8px;flex:1;min-width:120px;background:#25d366;color:#fff;border:none;border-radius:var(--rs);padding:12px;font-size:14px;font-weight:700;cursor:pointer}
+.share-btn-email{display:flex;align-items:center;justify-content:center;gap:8px;flex:1;min-width:120px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:12px;font-size:14px;font-weight:700;cursor:pointer}
+.share-btn-copy{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:var(--rs);padding:10px;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
 </head>
@@ -449,6 +487,10 @@ body{overflow:hidden}
   <button class="nav-btn drawer-item" data-view="notas">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
     <span>Ocorrências</span>
+  </button>
+  <button class="nav-btn drawer-item" data-view="coleta">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    <span>Coleta</span>
   </button>
   <div style="height:1px;background:var(--border);margin:10px 4px"></div>
   <button class="drawer-item" id="drawerResumo">
@@ -663,6 +705,20 @@ body{overflow:hidden}
     <div id="feedMovimentacao"></div>
   </section>
 
+  <!-- COLETA -->
+  <section id="view-coleta" class="view">
+    <div class="sec-hdr">
+      <span class="sec-title">Coletas</span>
+      <button class="link-btn" id="btnNovaColeta">+ Nova</button>
+    </div>
+    <div class="search-wrap" style="margin-bottom:10px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="form-input" id="coletaBusca" placeholder="Buscar por empresa, responsável ou nota...">
+    </div>
+    <div id="coletaBuscaResultado" style="margin-bottom:10px"></div>
+    <div id="listaColetas"></div>
+  </section>
+
   <!-- HISTÓRICO -->
   <section id="view-historico" class="view">
     <div class="sec-hdr"><span class="sec-title">Histórico</span></div>
@@ -709,6 +765,120 @@ body{overflow:hidden}
 </div><!-- .app-main -->
 
 <!-- MODAIS -->
+
+<!-- Modal: Nova Coleta / Editar Coleta -->
+<div class="modal-ov hidden" id="modalNovaColeta">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalNovaColetaTitulo">Nova Coleta</div>
+    <div class="form-group">
+      <label class="form-label">Empresa <span style="color:var(--bad)">*</span></label>
+      <input class="form-input" id="coletaEmpresa" placeholder="Nome da empresa" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Data da Coleta</label>
+      <input class="form-input" id="coletaDataColeta" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Responsável</label>
+      <input class="form-input" id="coletaResponsavel" readonly style="opacity:.6">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observações</label>
+      <textarea class="form-input" id="coletaObs" rows="2" placeholder="Opcional"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-secondary" id="btnCancelarNovaColeta">Cancelar</button>
+      <button class="btn btn-primary" id="btnSalvarColeta">Criar Coleta</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Detalhe de Coleta (full-screen) -->
+<div class="modal-full hidden" id="modalDetalheColeta">
+  <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
+    <button class="icon-btn" id="btnFecharDetalheColeta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    </button>
+    <span style="font-size:16px;font-weight:700;color:var(--text);flex:1" id="modalDetalheColetaTitulo">Coleta</span>
+    <button class="btn-share" id="btnCompartilharColeta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Compartilhar
+    </button>
+  </div>
+  <div style="overflow-y:auto;flex:1">
+    <div id="modalDetalheColetaContent"></div>
+  </div>
+</div>
+
+<!-- Modal: Adicionar/Editar Nota de Coleta -->
+<div class="modal-ov hidden" id="modalColetaNota">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalColetaNotaTitulo">Adicionar Nota</div>
+    <div class="form-group">
+      <label class="form-label">Nota Fiscal <span style="color:var(--bad)">*</span></label>
+      <input class="form-input" id="coletaNotaNF" placeholder="Ex: 123456" inputmode="numeric" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Volumes / Quantidade</label>
+      <input class="form-input" id="coletaNotaVolumes" type="number" min="0" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Avariada?</label>
+      <div style="display:flex;gap:8px">
+        <button class="chip active" id="coletaAvariadaNao" data-val="nao">Não</button>
+        <button class="chip" id="coletaAvariadaSim" data-val="sim">⚠️ Sim</button>
+      </div>
+    </div>
+    <div class="form-group" id="coletaAvariaGrupo" style="display:none">
+      <label class="form-label">Descrição da avaria <span style="color:var(--bad)">*</span></label>
+      <textarea class="form-input" id="coletaAvariaDesc" rows="2" placeholder="Ex: Caixa rasgada, produto molhado..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fotos</label>
+      <div id="coletaFotoPreview" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
+      <input type="file" id="coletaFotoInput" accept="image/*" multiple style="display:none">
+      <button class="btn btn-secondary" id="btnColetaAddFoto" type="button">+ Adicionar Foto</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observações</label>
+      <textarea class="form-input" id="coletaNotaObs" rows="2" placeholder="Opcional"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-secondary" id="btnCancelarColetaNota">Cancelar</button>
+      <button class="btn btn-primary" id="btnSalvarColetaNota">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Compartilhar (universal) -->
+<div class="modal-ov hidden" id="modalCompartilhar">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="share-sheet">
+      <div class="share-sheet-title">Compartilhar</div>
+      <div class="share-sheet-sub" id="shareSubtitle">Selecione como deseja enviar</div>
+      <div class="share-preview" id="sharePreview"></div>
+      <div class="share-actions">
+        <button class="share-btn-wa" id="btnShareWA">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.117 1.524 5.847L0 24l6.335-1.502A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.652-.502-5.177-1.38l-.371-.22-3.762.893.927-3.654-.24-.38A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          WhatsApp
+        </button>
+        <button class="share-btn-email" id="btnShareEmail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          E-mail
+        </button>
+      </div>
+      <button class="share-btn-copy" id="btnShareCopy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copiar texto
+      </button>
+      <button class="btn btn-secondary" id="btnFecharCompartilhar" style="width:100%;margin-top:8px">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-ov hidden" id="modalNota">
   <div class="modal-sheet"><div class="modal-handle"></div><div id="modalNotaContent"></div></div>
 </div>
@@ -1139,6 +1309,9 @@ async function carregarDados(mostrarErro=true) {
     state.invNotas    = (d.invNotas||[]).map(normInvNota);
     state.conferencias = (d.conferencias||[]).map(c=>({...c,id:String(c.id||''),inventarioId:String(c.inventarioId||''),setor:String(c.setor||''),conferente:String(c.conferente||'')}));
     state.confItens    = (d.confItens||[]).map(i=>({...i,id:String(i.id||''),conferenciaId:String(i.conferenciaId||''),inventarioId:String(i.inventarioId||''),notaFiscal:String(i.notaFiscal||''),resultado:String(i.resultado||''),setorRegistrado:String(i.setorRegistrado||''),setorEncontrado:String(i.setorEncontrado||'')}));
+    // Módulo Coleta — normaliza dados recebidos do servidor
+    if (d.coletas)      state.coletas      = (d.coletas||[]).map(normColeta);
+    if (d.coletasNotas) state.coletasNotas = (d.coletasNotas||[]).map(normColetaNota);
     cacheGuardar(); marcarSync(true); renderTudo();
   } catch(e) { marcarSync(false); if (mostrarErro) banner('bad','Sem conexão. Mostrando dados salvos.'); }
   finally { syncing=false; }
@@ -1215,6 +1388,7 @@ function copiarFallback(texto) {
 // ===== RENDER =====
 function renderTudo() {
   renderPainel(); renderNotas(); renderSeparacoes();
+  if (typeof renderColetas === 'function') renderColetas();
   renderPrioridade(); renderMovimentacao(); renderDatalistNotas(); renderInventarios();
 }
 
@@ -1477,6 +1651,10 @@ function abrirNota(id) {
     <div class="foto-row" id="thumbsComt"></div>
     <button class="btn btn-primary" id="btnEnviarComt" style="margin-top:10px">Enviar Comentário</button>
     <button class="btn btn-secondary" id="btnMoverEstaNota">Mover para Separação</button>
+    <button class="btn-share" id="btnCompartilharNota" style="width:100%;justify-content:center;padding:10px;margin-bottom:2px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Compartilhar
+    </button>
     <button class="btn btn-danger" id="btnExcluirNota">Excluir Nota</button>
     <button class="btn btn-secondary" id="btnFecharNota">Fechar</button>
   `;
@@ -1566,6 +1744,7 @@ function abrirNota(id) {
   };
 
   document.getElementById('btnMoverEstaNota').onclick=()=>{fecharModal('modalNota');abrirModalMover(id);};
+  document.getElementById('btnCompartilharNota').onclick=()=>abrirCompartilharOcorrencia(id);
   document.getElementById('btnExcluirNota').onclick=()=>{
     if(!confirm(`Excluir a nota ${n.notaFiscal}?`))return;
     state.notas=state.notas.filter(x=>x.id!==id);
@@ -3598,6 +3777,701 @@ function init(){
   }, SYNC_MS);
 }
 init();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MÓDULO COLETA
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ── Estado e normalizadores ───────────────────────────────────────────────
+function normColeta(c) {
+  const r = Object.assign({}, c);
+  ['id','empresa','responsavel','status','observacoes','criadoPor','ultimoUsuario'].forEach(k => r[k] = String(r[k]||''));
+  r.status = r.status || 'em_andamento';
+  return r;
+}
+function normColetaNota(n) {
+  const r = Object.assign({}, n);
+  ['id','coletaId','notaFiscal','conferente','status','avariada','descricaoAvaria','observacoes'].forEach(k => r[k] = String(r[k]||''));
+  r.quantidadeVolumes = String(r.quantidadeVolumes||'');
+  r.avariada = r.avariada === 'sim' ? 'sim' : 'nao';
+  r.status = r.status || 'incluida';
+  if (!Array.isArray(r.fotos)) r.fotos = r.fotos ? String(r.fotos).split('|').filter(Boolean) : [];
+  r.fotos = r.fotos.map(fmtDrive);
+  let hist = [];
+  try { hist = JSON.parse(r.historicoAlteracoes || '[]'); } catch(e) {}
+  r.historicoAlteracoes = hist;
+  return r;
+}
+
+// Inicializa arrays de coleta no state se ainda não existirem
+if (!state.coletas)      state.coletas      = [];
+if (!state.coletasNotas) state.coletasNotas = [];
+
+// ── Variável de contexto da coleta aberta ────────────────────────────────
+let _coletaAbertaId = null;
+let _coletaNotaEditId = null;
+let _coletaFotosNovas = []; // base64 das fotos ainda não enviadas
+let _coletaFotosExistentes = []; // URLs das fotos já salvas (edição)
+
+// ── Render principal ─────────────────────────────────────────────────────
+function renderColetas() {
+  const busca = (document.getElementById('coletaBusca')?.value || '').toLowerCase().trim();
+  const cont   = document.getElementById('listaColetas');
+  const buscaRes = document.getElementById('coletaBuscaResultado');
+  if (!cont) return;
+
+  // pesquisa global (busca em notas também)
+  if (busca.length >= 2) {
+    const notasMatch = state.coletasNotas.filter(n =>
+      n.notaFiscal.toLowerCase().includes(busca)
+    );
+    const coletasComNota = new Set(notasMatch.map(n => n.coletaId));
+
+    const coletasFiltradas = state.coletas.filter(c =>
+      c.empresa.toLowerCase().includes(busca) ||
+      c.responsavel.toLowerCase().includes(busca) ||
+      (c.dataColeta && c.dataColeta.includes(busca)) ||
+      coletasComNota.has(c.id)
+    );
+
+    if (notasMatch.length > 0) {
+      buscaRes.innerHTML = notasMatch.map(n => {
+        const col = state.coletas.find(c => c.id === n.coletaId);
+        if (!col) return '';
+        return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px;margin-bottom:6px;cursor:pointer" onclick="abrirDetalheColeta('${esc(col.id)}')">
+          <div style="font-size:12px;font-weight:700;color:var(--text)">NF ${esc(n.notaFiscal)}</div>
+          <div style="font-size:11px;color:var(--dim)">${esc(col.empresa)} · ${fmtDT(col.dataColeta)} · ${esc(col.responsavel)}</div>
+          <div style="font-size:11px;margin-top:2px">${coletaStatusBadge(col.status)}</div>
+        </div>`;
+      }).join('');
+    } else {
+      buscaRes.innerHTML = '';
+    }
+
+    cont.innerHTML = coletasFiltradas.length === 0 && notasMatch.length === 0
+      ? '<p style="color:var(--dim);font-size:13px;text-align:center;padding:20px 0">Nenhum resultado encontrado.</p>'
+      : coletasFiltradas.map(coletaCardHtml).join('');
+    return;
+  }
+
+  buscaRes.innerHTML = '';
+  const ordenadas = [...state.coletas].sort((a, b) => new Date(b.criadoEm||0) - new Date(a.criadoEm||0));
+  cont.innerHTML = ordenadas.length === 0
+    ? '<p style="color:var(--dim);font-size:13px;text-align:center;padding:30px 0">Nenhuma coleta ainda.<br>Clique em <strong>+ Nova</strong> para começar.</p>'
+    : ordenadas.map(coletaCardHtml).join('');
+}
+
+function coletaStatusBadge(status) {
+  const labels = { em_andamento:'Em andamento', finalizada:'Finalizada', pausada:'Pausada' };
+  return `<span class="coleta-status-tag ${esc(status)}">${esc(labels[status]||status)}</span>`;
+}
+
+function coletaCardHtml(c) {
+  const notas = state.coletasNotas.filter(n => n.coletaId === c.id);
+  const avariadas = notas.filter(n => n.avariada === 'sim').length;
+  const dataFmt = c.dataColeta ? new Date(c.dataColeta).toLocaleDateString('pt-BR') : '';
+  return `<div class="coleta-card">
+    <div class="coleta-card-hdr">
+      <div>
+        <div class="coleta-card-empresa">${esc(c.empresa)}</div>
+        <div class="coleta-card-meta">${dataFmt ? dataFmt + ' · ' : ''}${esc(c.responsavel)}</div>
+      </div>
+      ${coletaStatusBadge(c.status)}
+    </div>
+    <div class="coleta-card-body">
+      <div class="coleta-stat"><strong>${notas.length}</strong>Notas</div>
+      ${avariadas > 0 ? `<div class="coleta-stat" style="color:var(--bad)"><strong style="color:var(--bad)">${avariadas}</strong>Avariadas</div>` : ''}
+    </div>
+    <div style="display:flex;gap:6px;padding:0 13px 12px">
+      <button class="btn btn-primary btn-sm" onclick="abrirDetalheColeta('${esc(c.id)}')">Abrir</button>
+      <button class="btn btn-secondary btn-sm" onclick="editarColeta('${esc(c.id)}')">Editar</button>
+      <button class="btn btn-secondary btn-sm" onclick="abrirCompartilharColeta('${esc(c.id)}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+    </div>
+  </div>`;
+}
+
+// ── Abrir detalhe da coleta ───────────────────────────────────────────────
+function abrirDetalheColeta(coletaId) {
+  const c = state.coletas.find(x => x.id === coletaId);
+  if (!c) return;
+  _coletaAbertaId = coletaId;
+  document.getElementById('modalDetalheColetaTitulo').textContent = c.empresa;
+  renderDetalheColeta();
+  document.getElementById('modalDetalheColeta').classList.remove('hidden');
+}
+
+function renderDetalheColeta() {
+  const coletaId = _coletaAbertaId;
+  const c = state.coletas.find(x => x.id === coletaId);
+  if (!c) return;
+  const notas = state.coletasNotas.filter(n => n.coletaId === coletaId)
+    .sort((a, b) => new Date(b.criadoEm||0) - new Date(a.criadoEm||0));
+  const avariadas = notas.filter(n => n.avariada === 'sim').length;
+  const dataFmt = c.dataColeta ? new Date(c.dataColeta).toLocaleDateString('pt-BR') : '';
+
+  let html = `<div class="coleta-detail-hdr">
+    <div class="coleta-detail-empresa">${esc(c.empresa)}</div>
+    <div class="coleta-detail-meta">
+      📅 ${dataFmt || '—'} &nbsp;|&nbsp; 👤 ${esc(c.responsavel)}<br>
+      📦 ${notas.length} nota(s) &nbsp;|&nbsp; ${avariadas > 0 ? `⚠️ ${avariadas} avariada(s)` : '✅ Sem avarias'}
+      ${c.observacoes ? `<br>📝 ${esc(c.observacoes)}` : ''}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      ${c.status === 'em_andamento'
+        ? `<button class="btn btn-primary btn-sm" onclick="adicionarNotaColeta()">+ Nota</button>
+           <button class="btn btn-secondary btn-sm" onclick="finalizarColeta('${esc(c.id)}')">Finalizar</button>`
+        : `<span style="font-size:12px;color:var(--ok);font-weight:600">✅ Coleta finalizada</span>
+           <button class="btn btn-secondary btn-sm" onclick="reabrirColeta('${esc(c.id)}')">Reabrir</button>`
+      }
+      <button class="btn btn-danger btn-sm" onclick="excluirColeta('${esc(c.id)}')">Excluir</button>
+    </div>
+  </div>`;
+
+  if (notas.length === 0) {
+    html += `<p style="color:var(--dim);font-size:13px;text-align:center;padding:30px 0">Nenhuma nota adicionada ainda.</p>`;
+  } else {
+    html += notas.map(n => {
+      const fotos = (n.fotos||[]).filter(Boolean);
+      return `<div class="coleta-nota-row">
+        <div style="flex:1;min-width:0">
+          <div class="coleta-nota-nf">NF ${esc(n.notaFiscal)}</div>
+          <div class="coleta-nota-meta">
+            📦 ${n.quantidadeVolumes||'—'} vol.
+            &nbsp;·&nbsp; 👤 ${esc(n.conferente)}
+            &nbsp;·&nbsp; 🕐 ${fmtDT(n.dataHoraConferencia||n.criadoEm)}
+          </div>
+          ${n.avariada === 'sim' ? `<div class="avaria-badge">⚠️ Avariada${n.descricaoAvaria ? ': ' + esc(n.descricaoAvaria) : ''}</div>` : ''}
+          ${n.observacoes ? `<div style="font-size:11px;color:var(--dim);margin-top:3px">📝 ${esc(n.observacoes)}</div>` : ''}
+          ${fotos.length > 0
+            ? `<div style="display:flex;gap:5px;margin-top:7px;flex-wrap:wrap">${fotos.map(f => `<a href="${esc(f)}" target="_blank"><img src="${esc(f)}" style="width:52px;height:52px;object-fit:cover;border-radius:6px;border:1px solid var(--border)"></a>`).join('')}</div>`
+            : ''}
+        </div>
+        <div class="coleta-nota-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editarNotaColeta('${esc(n.id)}')">Editar</button>
+          <button class="btn btn-secondary btn-sm" onclick="abrirCompartilharNota(${JSON.stringify(esc(n.id))})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="excluirNotaColeta('${esc(n.id)}','${esc(n.notaFiscal)}')">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('modalDetalheColetaContent').innerHTML = html;
+}
+
+// ── Criar / editar coleta ─────────────────────────────────────────────────
+document.getElementById('btnNovaColeta').addEventListener('click', () => {
+  _coletaNotaEditId = null;
+  document.getElementById('modalNovaColetaTitulo').textContent = 'Nova Coleta';
+  document.getElementById('coletaEmpresa').value = '';
+  document.getElementById('coletaDataColeta').value = new Date().toISOString().split('T')[0];
+  document.getElementById('coletaResponsavel').value = getNome() || '(configure seu nome)';
+  document.getElementById('coletaObs').value = '';
+  document.getElementById('btnSalvarColeta').textContent = 'Criar Coleta';
+  document.getElementById('btnSalvarColeta').dataset.editId = '';
+  document.getElementById('modalNovaColeta').classList.remove('hidden');
+});
+
+function editarColeta(id) {
+  const c = state.coletas.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('modalNovaColetaTitulo').textContent = 'Editar Coleta';
+  document.getElementById('coletaEmpresa').value = c.empresa;
+  document.getElementById('coletaDataColeta').value = c.dataColeta ? c.dataColeta.split('T')[0] : '';
+  document.getElementById('coletaResponsavel').value = c.responsavel;
+  document.getElementById('coletaObs').value = c.observacoes;
+  document.getElementById('btnSalvarColeta').textContent = 'Salvar';
+  document.getElementById('btnSalvarColeta').dataset.editId = id;
+  document.getElementById('modalNovaColeta').classList.remove('hidden');
+}
+
+document.getElementById('btnCancelarNovaColeta').addEventListener('click', () => {
+  document.getElementById('modalNovaColeta').classList.add('hidden');
+});
+
+document.getElementById('btnSalvarColeta').addEventListener('click', async () => {
+  if (!exigirNome(true)) return;
+  const empresa = document.getElementById('coletaEmpresa').value.trim();
+  if (!empresa) { banner('bad', 'Informe o nome da empresa.'); return; }
+
+  const editId = document.getElementById('btnSalvarColeta').dataset.editId;
+  const dataColeta = document.getElementById('coletaDataColeta').value || new Date().toISOString().split('T')[0];
+  const observacoes = document.getElementById('coletaObs').value.trim();
+  document.getElementById('btnSalvarColeta').disabled = true;
+
+  try {
+    if (editId) {
+      // editar existente
+      await post({ acao:'atualizarColeta', id: editId, responsavel: getNome(),
+        campos: { empresa, dataColeta, observacoes } });
+      const c = state.coletas.find(x => x.id === editId);
+      if (c) Object.assign(c, { empresa, dataColeta, observacoes });
+    } else {
+      // criar novo
+      const id = 'col_' + uid();
+      await post({ acao:'criarColeta', dados: { id, empresa, dataColeta, observacoes, responsavel: getNome() } });
+      state.coletas.push(normColeta({ id, empresa, dataColeta, observacoes,
+        responsavel: getNome(), status:'em_andamento',
+        criadoEm: new Date().toISOString(), criadoPor: getNome(),
+        ultimaAlteracao: new Date().toISOString(), ultimoUsuario: getNome() }));
+    }
+    cacheGuardar();
+    renderColetas();
+    document.getElementById('modalNovaColeta').classList.add('hidden');
+    banner('ok', editId ? 'Coleta atualizada.' : 'Coleta criada!');
+    if (!editId) abrirDetalheColeta(state.coletas[state.coletas.length - 1].id);
+  } catch(e) {
+    banner('bad', 'Erro: ' + e.message);
+  } finally {
+    document.getElementById('btnSalvarColeta').disabled = false;
+  }
+});
+
+// ── Finalizar / reabrir coleta ────────────────────────────────────────────
+async function finalizarColeta(id) {
+  if (!confirm('Finalizar esta coleta? Não será possível adicionar novas notas.')) return;
+  try {
+    await post({ acao:'finalizarColeta', id, responsavel: getNome() });
+    const c = state.coletas.find(x => x.id === id);
+    if (c) c.status = 'finalizada';
+    cacheGuardar(); renderColetas(); renderDetalheColeta();
+    banner('ok', 'Coleta finalizada.');
+  } catch(e) { banner('bad', 'Erro: ' + e.message); }
+}
+
+async function reabrirColeta(id) {
+  try {
+    await post({ acao:'reabrirColeta', id, responsavel: getNome() });
+    const c = state.coletas.find(x => x.id === id);
+    if (c) c.status = 'em_andamento';
+    cacheGuardar(); renderColetas(); renderDetalheColeta();
+    banner('ok', 'Coleta reaberta.');
+  } catch(e) { banner('bad', 'Erro: ' + e.message); }
+}
+
+async function excluirColeta(id) {
+  const c = state.coletas.find(x => x.id === id);
+  if (!c) return;
+  const qtd = state.coletasNotas.filter(n => n.coletaId === id).length;
+  if (!confirm(`Excluir a coleta "${c.empresa}"${qtd > 0 ? ` e suas ${qtd} nota(s)` : ''}? Esta ação não pode ser desfeita.`)) return;
+  try {
+    await post({ acao:'excluirColeta', id, empresa: c.empresa, responsavel: getNome() });
+    state.coletas = state.coletas.filter(x => x.id !== id);
+    state.coletasNotas = state.coletasNotas.filter(x => x.coletaId !== id);
+    cacheGuardar(); renderColetas();
+    document.getElementById('modalDetalheColeta').classList.add('hidden');
+    banner('ok', 'Coleta excluída.');
+  } catch(e) { banner('bad', 'Erro: ' + e.message); }
+}
+
+document.getElementById('btnFecharDetalheColeta').addEventListener('click', () => {
+  document.getElementById('modalDetalheColeta').classList.add('hidden');
+  _coletaAbertaId = null;
+});
+
+// ── Adicionar / editar nota de coleta ────────────────────────────────────
+function adicionarNotaColeta() {
+  _coletaNotaEditId = null;
+  _coletaFotosNovas = [];
+  _coletaFotosExistentes = [];
+  document.getElementById('modalColetaNotaTitulo').textContent = 'Adicionar Nota';
+  document.getElementById('coletaNotaNF').value = '';
+  document.getElementById('coletaNotaVolumes').value = '';
+  document.getElementById('coletaAvariadaNao').classList.add('active');
+  document.getElementById('coletaAvariadaSim').classList.remove('active');
+  document.getElementById('coletaAvariaGrupo').style.display = 'none';
+  document.getElementById('coletaAvariaDesc').value = '';
+  document.getElementById('coletaNotaObs').value = '';
+  document.getElementById('coletaFotoPreview').innerHTML = '';
+  document.getElementById('btnSalvarColetaNota').textContent = 'Adicionar';
+  document.getElementById('modalColetaNota').classList.remove('hidden');
+}
+
+function editarNotaColeta(notaId) {
+  const n = state.coletasNotas.find(x => x.id === notaId);
+  if (!n) return;
+  _coletaNotaEditId = notaId;
+  _coletaFotosNovas = [];
+  _coletaFotosExistentes = [...(n.fotos||[])];
+  document.getElementById('modalColetaNotaTitulo').textContent = 'Editar Nota NF ' + n.notaFiscal;
+  document.getElementById('coletaNotaNF').value = n.notaFiscal;
+  document.getElementById('coletaNotaNF').readOnly = true; // NF não muda após criação
+  document.getElementById('coletaNotaVolumes').value = n.quantidadeVolumes || '';
+  const avSim = n.avariada === 'sim';
+  document.getElementById('coletaAvariadaNao').classList.toggle('active', !avSim);
+  document.getElementById('coletaAvariadaSim').classList.toggle('active', avSim);
+  document.getElementById('coletaAvariaGrupo').style.display = avSim ? '' : 'none';
+  document.getElementById('coletaAvariaDesc').value = n.descricaoAvaria || '';
+  document.getElementById('coletaNotaObs').value = n.observacoes || '';
+  // mostra thumbs das fotos existentes
+  renderColetaFotoPreview();
+  document.getElementById('btnSalvarColetaNota').textContent = 'Salvar';
+  document.getElementById('modalColetaNota').classList.remove('hidden');
+}
+
+function renderColetaFotoPreview() {
+  const cont = document.getElementById('coletaFotoPreview');
+  const todasFotos = [
+    ..._coletaFotosExistentes.map(url => ({ url, novo: false })),
+    ..._coletaFotosNovas.map(b64 => ({ url: b64, novo: true }))
+  ];
+  cont.innerHTML = todasFotos.map((f, i) =>
+    `<div style="position:relative;width:60px;height:60px">
+      <img src="${esc(f.url)}" style="width:60px;height:60px;object-fit:cover;border-radius:7px;border:1px solid var(--border)">
+      <button onclick="removerColetaFoto(${i}, ${f.novo})" style="position:absolute;top:-4px;right:-4px;width:18px;height:18px;border-radius:50%;background:var(--bad);color:#fff;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">✕</button>
+    </div>`
+  ).join('');
+}
+
+function removerColetaFoto(idx, isNovo) {
+  const totalExistentes = _coletaFotosExistentes.length;
+  if (!isNovo && idx < totalExistentes) {
+    _coletaFotosExistentes.splice(idx, 1);
+  } else {
+    _coletaFotosNovas.splice(idx - totalExistentes, 1);
+  }
+  renderColetaFotoPreview();
+}
+
+// Botões avariada
+['coletaAvariadaNao','coletaAvariadaSim'].forEach(id => {
+  document.getElementById(id).addEventListener('click', () => {
+    const isSim = id === 'coletaAvariadaSim';
+    document.getElementById('coletaAvariadaNao').classList.toggle('active', !isSim);
+    document.getElementById('coletaAvariadaSim').classList.toggle('active', isSim);
+    document.getElementById('coletaAvariaGrupo').style.display = isSim ? '' : 'none';
+    if (!isSim) document.getElementById('coletaAvariaDesc').value = '';
+  });
+});
+
+// Fotos
+document.getElementById('btnColetaAddFoto').addEventListener('click', () => {
+  document.getElementById('coletaFotoInput').click();
+});
+document.getElementById('coletaFotoInput').addEventListener('change', async (e) => {
+  const files = [...e.target.files];
+  for (const f of files) {
+    try {
+      const b64 = await processarImg(f);
+      _coletaFotosNovas.push(b64);
+    } catch(err) { banner('bad', 'Erro ao processar foto.'); }
+  }
+  renderColetaFotoPreview();
+  e.target.value = '';
+});
+
+document.getElementById('btnCancelarColetaNota').addEventListener('click', () => {
+  document.getElementById('coletaNotaNF').readOnly = false;
+  document.getElementById('modalColetaNota').classList.add('hidden');
+});
+
+document.getElementById('btnSalvarColetaNota').addEventListener('click', async () => {
+  if (!exigirNome(true)) return;
+  const nf = document.getElementById('coletaNotaNF').value.trim();
+  if (!nf) { banner('bad', 'Informe o número da nota fiscal.'); return; }
+  const avariada = document.getElementById('coletaAvariadaSim').classList.contains('active') ? 'sim' : 'nao';
+  const descricaoAvaria = document.getElementById('coletaAvariaDesc').value.trim();
+  if (avariada === 'sim' && !descricaoAvaria) { banner('bad', 'Descreva a avaria.'); return; }
+
+  const btn = document.getElementById('btnSalvarColetaNota');
+  btn.disabled = true;
+  const coletaId = _coletaAbertaId;
+
+  try {
+    if (_coletaNotaEditId) {
+      // edição
+      const campos = {
+        quantidadeVolumes: document.getElementById('coletaNotaVolumes').value,
+        avariada, descricaoAvaria,
+        observacoes: document.getElementById('coletaNotaObs').value.trim(),
+        fotosNovas: _coletaFotosNovas,
+        fotosExistentes: _coletaFotosExistentes
+      };
+      await post({ acao:'atualizarNotaColeta', id: _coletaNotaEditId,
+        coletaId, notaFiscal: nf, responsavel: getNome(), campos });
+      const n = state.coletasNotas.find(x => x.id === _coletaNotaEditId);
+      if (n) {
+        Object.assign(n, { quantidadeVolumes: campos.quantidadeVolumes,
+          avariada, descricaoAvaria, observacoes: campos.observacoes });
+        // mescla fotos localmente
+        n.fotos = [..._coletaFotosExistentes];
+      }
+    } else {
+      // criação
+      const id = 'cn_' + uid();
+      await post({ acao:'adicionarNotaColeta', dados: {
+        id, coletaId, notaFiscal: nf,
+        quantidadeVolumes: document.getElementById('coletaNotaVolumes').value,
+        avariada, descricaoAvaria,
+        observacoes: document.getElementById('coletaNotaObs').value.trim(),
+        fotos: _coletaFotosNovas,
+        conferente: getNome()
+      }});
+      state.coletasNotas.push(normColetaNota({
+        id, coletaId, notaFiscal: nf,
+        quantidadeVolumes: document.getElementById('coletaNotaVolumes').value,
+        avariada, descricaoAvaria,
+        observacoes: document.getElementById('coletaNotaObs').value.trim(),
+        fotos: [], conferente: getNome(),
+        criadoEm: new Date().toISOString(), status:'incluida'
+      }));
+    }
+    cacheGuardar();
+    document.getElementById('coletaNotaNF').readOnly = false;
+    document.getElementById('modalColetaNota').classList.add('hidden');
+    renderDetalheColeta();
+    renderColetas();
+    banner('ok', _coletaNotaEditId ? 'Nota atualizada.' : 'Nota adicionada!');
+  } catch(e) {
+    banner('bad', 'Erro: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+async function excluirNotaColeta(notaId, nf) {
+  if (!confirm(`Excluir a nota NF ${nf}?`)) return;
+  const coletaId = _coletaAbertaId;
+  try {
+    await post({ acao:'excluirNotaColeta', id: notaId, coletaId, notaFiscal: nf, responsavel: getNome() });
+    state.coletasNotas = state.coletasNotas.filter(x => x.id !== notaId);
+    cacheGuardar(); renderDetalheColeta(); renderColetas();
+    banner('ok', 'Nota excluída.');
+  } catch(e) { banner('bad', 'Erro: ' + e.message); }
+}
+
+// ── renderColetas é chamado por renderTudo (integrado diretamente) ────────
+
+// ═══════════════════════════════════════════════════════════════════════════
+// COMPARTILHAMENTO UNIVERSAL
+// ═══════════════════════════════════════════════════════════════════════════
+
+let _shareTxt = '';
+let _shareTitulo = '';
+
+function abrirCompartilhar(titulo, textoFormatado) {
+  _shareTxt = textoFormatado;
+  _shareTitulo = titulo;
+  document.getElementById('shareSubtitle').textContent = titulo;
+  document.getElementById('sharePreview').textContent = textoFormatado;
+  document.getElementById('modalCompartilhar').classList.remove('hidden');
+}
+
+// ── Compartilhar Coleta (todas as notas) ─────────────────────────────────
+function abrirCompartilharColeta(coletaId) {
+  const c = state.coletas.find(x => x.id === coletaId);
+  if (!c) return;
+  const notas = state.coletasNotas.filter(n => n.coletaId === coletaId)
+    .sort((a, b) => new Date(a.criadoEm||0) - new Date(b.criadoEm||0));
+  const data = c.dataColeta ? new Date(c.dataColeta).toLocaleDateString('pt-BR') : '—';
+
+  let txt = `📦 *COLETA — ${c.empresa}*\n`;
+  txt += `📅 Data: ${data}\n`;
+  txt += `👤 Responsável: ${c.responsavel}\n`;
+  txt += `📊 Status: ${c.status === 'em_andamento' ? 'Em andamento' : 'Finalizada'}\n`;
+  if (c.observacoes) txt += `📝 Obs: ${c.observacoes}\n`;
+  txt += `───────────────────\n`;
+  txt += `📋 NOTAS FISCAIS (${notas.length})\n\n`;
+
+  notas.forEach((n, i) => {
+    txt += `${i+1}. NF ${n.notaFiscal}\n`;
+    txt += `   Volumes: ${n.quantidadeVolumes||'—'}\n`;
+    txt += `   Conferente: ${n.conferente}\n`;
+    txt += `   Status: ${n.avariada === 'sim' ? '⚠️ AVARIADA' : '✅ Em perfeito estado'}\n`;
+    if (n.descricaoAvaria) txt += `   Avaria: ${n.descricaoAvaria}\n`;
+    if (n.fotos && n.fotos.length > 0) {
+      txt += `   Fotos (${n.fotos.length}):\n`;
+      n.fotos.forEach((f, fi) => txt += `   📷 Foto ${fi+1}: ${f}\n`);
+    }
+    txt += `   🕐 ${fmtDT(n.dataHoraConferencia||n.criadoEm)}\n\n`;
+  });
+
+  txt += `───────────────────\n`;
+  txt += `Sistema: Armazém Risso`;
+  abrirCompartilhar(`Coleta — ${c.empresa} (${notas.length} nota(s))`, txt);
+}
+
+document.getElementById('btnCompartilharColeta').addEventListener('click', () => {
+  if (_coletaAbertaId) abrirCompartilharColeta(_coletaAbertaId);
+});
+
+// ── Compartilhar nota individual (Coleta) ────────────────────────────────
+function abrirCompartilharNota(notaId) {
+  const n = state.coletasNotas.find(x => x.id === notaId);
+  if (!n) return;
+  const c = state.coletas.find(x => x.id === n.coletaId);
+  const empresa = c ? c.empresa : '—';
+  const data = c && c.dataColeta ? new Date(c.dataColeta).toLocaleDateString('pt-BR') : '—';
+
+  let txt = `📦 *NOTA FISCAL DE COLETA*\n`;
+  txt += `🏢 Empresa: ${empresa}\n`;
+  txt += `📅 Coleta: ${data}\n`;
+  txt += `───────────────────\n`;
+  txt += `📋 NF: ${n.notaFiscal}\n`;
+  txt += `📦 Volumes: ${n.quantidadeVolumes||'—'}\n`;
+  txt += `👤 Conferente: ${n.conferente}\n`;
+  txt += `🕐 Hora: ${fmtDT(n.dataHoraConferencia||n.criadoEm)}\n`;
+  txt += `📊 Estado: ${n.avariada === 'sim' ? '⚠️ AVARIADA' : '✅ Em perfeito estado'}\n`;
+  if (n.descricaoAvaria) txt += `⚠️ Avaria: ${n.descricaoAvaria}\n`;
+  if (n.fotos && n.fotos.length > 0) {
+    txt += `\n📷 Fotos (${n.fotos.length}):\n`;
+    n.fotos.forEach((f, i) => txt += `Foto ${i+1}: ${f}\n`);
+  }
+  if (n.observacoes) txt += `\n📝 Obs: ${n.observacoes}\n`;
+  txt += `───────────────────\n`;
+  txt += `Sistema: Armazém Risso`;
+  abrirCompartilhar(`NF ${n.notaFiscal} — ${empresa}`, txt);
+}
+
+// ── Compartilhar nota de Ocorrências (módulo Notas) ──────────────────────
+function abrirCompartilharOcorrencia(notaId) {
+  const n = state.notas.find(x => x.id === notaId);
+  if (!n) return;
+  const comts = state.comentarios.filter(c => c.notaId === notaId)
+    .sort((a, b) => new Date(a.dataHora||0) - new Date(b.dataHora||0));
+
+  let txt = `📋 *OCORRÊNCIA — NF ${n.notaFiscal}*\n`;
+  txt += `📊 Status: ${STATUS_LABELS[n.status]||n.status||'Armazém'}\n`;
+  if (n.setor) txt += `🏭 Setor: ${SETOR_MAP[n.setor]||n.setor}\n`;
+  if (n.peso) txt += `⚖️ Peso: ${n.peso}\n`;
+  if (n.volumes) txt += `📦 Volumes: ${n.volumes}\n`;
+  if (n.descricao) txt += `📝 Descrição: ${n.descricao}\n`;
+  txt += `👤 Conferente: ${n.conferente}\n`;
+  txt += `🕐 Registrada: ${fmtDT(n.dataHora)}\n`;
+  if (n.conferidoPor) txt += `✅ Conferida por: ${n.conferidoPor} em ${fmtDT(n.conferidoEm)}\n`;
+  if (n.fotos && n.fotos.length > 0) {
+    txt += `\n📷 Fotos (${n.fotos.length}):\n`;
+    n.fotos.forEach((f, i) => txt += `Foto ${i+1}: ${f}\n`);
+  }
+  if (comts.length > 0) {
+    txt += `\n───────────────────\n`;
+    txt += `💬 Comentários (${comts.length}):\n`;
+    comts.forEach(c => {
+      txt += `\n👤 ${c.conferente} — ${fmtDT(c.dataHora)}\n`;
+      txt += `${c.texto}\n`;
+      if (c.fotos && c.fotos.length > 0)
+        c.fotos.forEach((f, i) => txt += `📷 Foto ${i+1}: ${f}\n`);
+    });
+  }
+  txt += `───────────────────\n`;
+  txt += `Sistema: Armazém Risso`;
+  abrirCompartilhar(`NF ${n.notaFiscal}`, txt);
+}
+
+// ── Compartilhar nota do Inventário ──────────────────────────────────────
+function abrirCompartilharInvNota(invNotaId) {
+  const n = state.invNotas.find(x => x.id === invNotaId);
+  if (!n) return;
+  const inv = state.inventarios.find(x => x.id === n.inventarioId);
+
+  let txt = `📋 *INVENTÁRIO — NF ${n.notaFiscal}*\n`;
+  if (inv) txt += `📁 Inventário: ${inv.titulo||'—'}\n`;
+  if (n.setor) txt += `🏭 Setor: ${SETOR_MAP[n.setor]||n.setor}\n`;
+  if (n.volumes) txt += `📦 Volumes: ${n.volumes}\n`;
+  txt += `📊 Status: ${n.status||'incluida'}\n`;
+  txt += `👤 Conferente: ${n.conferente}\n`;
+  txt += `🕐 Data/Hora: ${fmtDT(n.dataHora)}\n`;
+  if (n.fotos && n.fotos.length > 0) {
+    txt += `\n📷 Fotos (${n.fotos.length}):\n`;
+    n.fotos.forEach((f, i) => txt += `Foto ${i+1}: ${f}\n`);
+  }
+  txt += `───────────────────\n`;
+  txt += `Sistema: Armazém Risso`;
+  abrirCompartilhar(`NF ${n.notaFiscal} — Inventário`, txt);
+}
+
+// ── Compartilhar múltiplas notas selecionadas ────────────────────────────
+function abrirCompartilharSelecao(ids) {
+  const notas = ids.map(id => state.notas.find(x => x.id === id)).filter(Boolean);
+  if (notas.length === 0) return;
+
+  let txt = `📋 *OCORRÊNCIAS — ${notas.length} nota(s)*\n`;
+  txt += `📅 ${new Date().toLocaleDateString('pt-BR')}\n`;
+  txt += `───────────────────\n\n`;
+
+  notas.forEach((n, i) => {
+    txt += `${i+1}. NF ${n.notaFiscal}\n`;
+    txt += `   Status: ${STATUS_LABELS[n.status]||n.status||'Armazém'}\n`;
+    if (n.setor) txt += `   Setor: ${SETOR_MAP[n.setor]||n.setor}\n`;
+    if (n.volumes) txt += `   Volumes: ${n.volumes}\n`;
+    if (n.fotos && n.fotos.length > 0)
+      n.fotos.forEach((f, fi) => txt += `   📷 Foto ${fi+1}: ${f}\n`);
+    txt += '\n';
+  });
+
+  txt += `───────────────────\n`;
+  txt += `Sistema: Armazém Risso`;
+  abrirCompartilhar(`${notas.length} ocorrência(s) selecionada(s)`, txt);
+}
+
+// ── Ações do modal Compartilhar ──────────────────────────────────────────
+document.getElementById('btnShareWA').addEventListener('click', () => {
+  const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(_shareTxt);
+  window.open(url, '_blank');
+});
+
+document.getElementById('btnShareEmail').addEventListener('click', () => {
+  const sub = encodeURIComponent(_shareTitulo + ' — Armazém Risso');
+  const body = encodeURIComponent(_shareTxt);
+  window.open(`mailto:?subject=${sub}&body=${body}`, '_blank');
+});
+
+document.getElementById('btnShareCopy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(_shareTxt);
+    banner('ok', 'Texto copiado para a área de transferência!');
+  } catch(e) {
+    // fallback para navegadores sem clipboard API
+    const el = document.createElement('textarea');
+    el.value = _shareTxt;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    banner('ok', 'Texto copiado!');
+  }
+  document.getElementById('modalCompartilhar').classList.add('hidden');
+});
+
+document.getElementById('btnFecharCompartilhar').addEventListener('click', () => {
+  document.getElementById('modalCompartilhar').classList.add('hidden');
+});
+
+// Botão compartilhar no modal de nota é bindado diretamente em abrirModalNota()
+
+// ── Hookear Compartilhar na seleção múltipla de notas ────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const barraSelecao = document.getElementById('barraSelecao');
+  if (barraSelecao) {
+    const btnShare = document.createElement('button');
+    btnShare.className = 'btn btn-secondary btn-sm';
+    btnShare.id = 'btnCompartilharSel';
+    btnShare.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`;
+    btnShare.title = 'Compartilhar selecionadas';
+    btnShare.addEventListener('click', () => {
+      abrirCompartilharSelecao([...notasSelecionadas]);
+    });
+    const btnsDiv = barraSelecao.querySelector('div');
+    if (btnsDiv) btnsDiv.appendChild(btnShare);
+  }
+});
+
+
+
+// ── Busca de coleta ao digitar ────────────────────────────────────────────
+document.getElementById('coletaBusca').addEventListener('input', () => renderColetas());
+
+// ── Inicializar state de coletas do cache ────────────────────────────────
+(function() {
+  const cached = JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+  if (cached) {
+    if (Array.isArray(cached.coletas))      state.coletas      = cached.coletas.map(normColeta);
+    if (Array.isArray(cached.coletasNotas)) state.coletasNotas = cached.coletasNotas.map(normColetaNota);
+  }
+})();
 </script>
 </body>
 </html>
