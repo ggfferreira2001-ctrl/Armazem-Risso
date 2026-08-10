@@ -766,6 +766,37 @@ body{overflow:hidden}
 
 <!-- MODAIS -->
 
+<!-- Modal: Setor temporário no Inventário -->
+<div class="modal-ov hidden" id="modalSetorTemp">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Setor Temporário</div>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:12px">Crie um agrupamento exclusivo para este inventário. Exemplo: <strong>Caminhão ABC 05/08</strong>, <strong>Palete Avulso</strong>.</p>
+    <div class="form-group">
+      <label class="form-label">Nome do setor <span style="color:var(--bad)">*</span></label>
+      <input class="form-input" id="inputSetorTemp" placeholder="Ex: Caminhão ABC Transportes" autocomplete="off">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-secondary" id="btnCancelarSetorTemp">Cancelar</button>
+      <button class="btn btn-primary" id="btnConfirmarSetorTemp">Criar Setor</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: adicionar notas em lote na Coleta -->
+<div class="modal-ov hidden" id="modalColetaLote">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Adicionar Notas em Lote</div>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:12px">Uma nota por linha. Formato: <strong>NF Volumes</strong><br>Exemplo: <code>123456 12</code> ou só <code>123456</code></p>
+    <textarea class="form-input" id="coletaLoteTexto" rows="10" placeholder="123456 12&#10;789012 5&#10;345678" style="font-family:monospace;font-size:13px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-secondary" id="btnFecharColetaLote">Cancelar</button>
+      <button class="btn btn-primary" id="btnSalvarColetaLote">Adicionar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Nova Coleta / Editar Coleta -->
 <div class="modal-ov hidden" id="modalNovaColeta">
   <div class="modal-sheet">
@@ -2824,7 +2855,11 @@ function renderInventarios() {
       </div>
       <div class="inv-body ${isOpen?'open':''}" id="inv-body-${esc(inv.id)}">
         ${enc ? `<div style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)"><span style="font-size:12px;color:var(--faint)">Inventário encerrado após 1 dia útil</span><button class="btn btn-secondary btn-sm" data-inv-reabrir="${esc(inv.id)}">🔓 Reabrir</button></div>` : ''}
-        ${SETORES_LISTA.map(setor => {
+        ${(() => {
+          // setores canônicos + setores extras (criados pelo usuário neste inventário)
+          const setoresExtras = [...new Set(notas.map(n=>n.setor).filter(s=>s&&!SETORES_LISTA.includes(s)))].sort();
+          const todosSetores = [...SETORES_LISTA, ...setoresExtras];
+          return todosSetores.map(setor => {
           const notasSetor = notas.filter(n => n.setor === setor);
           const setorKey = inv.id+'__'+setor;
           const setorOpen = invSetorAberto === setorKey;
@@ -2872,15 +2907,42 @@ function renderInventarios() {
               }
             </div>
           </div>`;
-        }).join('')}
+        }).join('')})()}
+        ${!enc ? `<button class="btn btn-secondary" style="width:100%;margin-top:8px;font-size:12px" data-inv-add-setor="${esc(inv.id)}">+ Setor temporário</button>` : ''}
       </div>
     </div>`;
   }).join('');
 }
 
 // Acordeão do inventário e setores
+let _setorTempInvId = null;
+
+document.getElementById('btnCancelarSetorTemp').addEventListener('click', () => {
+  fecharModal('modalSetorTemp'); _setorTempInvId = null;
+});
+document.getElementById('modalSetorTemp').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalSetorTemp')) { fecharModal('modalSetorTemp'); _setorTempInvId = null; }
+});
+document.getElementById('btnConfirmarSetorTemp').addEventListener('click', () => {
+  const nome = document.getElementById('inputSetorTemp').value.trim();
+  if (!nome) { banner('bad', 'Informe o nome do setor.'); return; }
+  fecharModal('modalSetorTemp');
+  // abre direto o lote de notas para esse setor temporário
+  abrirModalLote(_setorTempInvId, nome);
+  _setorTempInvId = null;
+});
 document.getElementById('listaInventarios').addEventListener('click', e => {
   // apagar inventário
+  // setor temporário
+  const addSetorBtn = e.target.closest('[data-inv-add-setor]');
+  if (addSetorBtn) {
+    _setorTempInvId = addSetorBtn.dataset.invAddSetor;
+    document.getElementById('inputSetorTemp').value = '';
+    document.getElementById('modalSetorTemp').classList.remove('hidden');
+    setTimeout(() => document.getElementById('inputSetorTemp').focus(), 100);
+    return;
+  }
+
   const apagarBtn = e.target.closest('[data-inv-apagar]');
   if (apagarBtn) {
     pedirSenhaAdm(() => {
@@ -3147,9 +3209,28 @@ document.getElementById('btnSalvarInvLote').addEventListener('click', () => {
   });
   novas.forEach(n => state.invNotas.push(n));
   cacheGuardar(); renderInventarios();
-  novas.forEach(n => post({acao:'adicionarInvNota', dados:n}).catch(()=>{}));
   fecharModal('modalInvLote');
-  banner('ok', `${novas.length} nota${novas.length>1?'s':''} adicionada${novas.length>1?'s':''}!`);
+  banner('ok', `${novas.length} nota${novas.length>1?'s':''} adicionada${novas.length>1?'s':''}! Salvando...`);
+
+  // Envia em sequência com pequeno intervalo — o Apps Script não suporta
+  // múltiplas requisições simultâneas e descarta o excesso silenciosamente.
+  (async () => {
+    let erros = 0;
+    for (let i = 0; i < novas.length; i++) {
+      try {
+        await post({ acao:'adicionarInvNota', dados: novas[i] });
+      } catch(e) {
+        erros++;
+      }
+      // pequena pausa entre requisições para não sobrecarregar o Apps Script
+      if (i < novas.length - 1) await new Promise(r => setTimeout(r, 300));
+    }
+    if (erros === 0) {
+      banner('ok', `✅ ${novas.length} nota${novas.length>1?'s':''} salva${novas.length>1?'s':''} com sucesso!`);
+    } else {
+      banner('bad', `⚠️ ${erros} nota(s) não foram salvas. Verifique a conexão.`);
+    }
+  })();
 });
 document.getElementById('btnFecharInvLote').addEventListener('click', () => fecharModal('modalInvLote'));
 document.getElementById('modalInvLote').addEventListener('click', e => { if(e.target===document.getElementById('modalInvLote')) fecharModal('modalInvLote'); });
@@ -3925,6 +4006,7 @@ function renderDetalheColeta() {
     <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
       ${c.status === 'em_andamento'
         ? `<button class="btn btn-primary btn-sm" onclick="adicionarNotaColeta()">+ Nota</button>
+           <button class="btn btn-secondary btn-sm" onclick="abrirModalColetaLote()">+ Lote</button>
            <button class="btn btn-secondary btn-sm" onclick="finalizarColeta('${esc(c.id)}')">Finalizar</button>`
         : `<span style="font-size:12px;color:var(--ok);font-weight:600">✅ Coleta finalizada</span>
            <button class="btn btn-secondary btn-sm" onclick="reabrirColeta('${esc(c.id)}')">Reabrir</button>`
@@ -4464,6 +4546,68 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+// ── Lote de notas na Coleta ───────────────────────────────────────────────
+function abrirModalColetaLote() {
+  document.getElementById('coletaLoteTexto').value = '';
+  document.getElementById('modalColetaLote').classList.remove('hidden');
+  setTimeout(() => document.getElementById('coletaLoteTexto').focus(), 100);
+}
+
+document.getElementById('btnFecharColetaLote').addEventListener('click', () => {
+  document.getElementById('modalColetaLote').classList.add('hidden');
+});
+
+document.getElementById('btnSalvarColetaLote').addEventListener('click', async () => {
+  if (!exigirNome(true)) return;
+  const coletaId = _coletaAbertaId;
+  if (!coletaId) return;
+  const coleta = state.coletas.find(c => c.id === coletaId);
+  if (!coleta || coleta.status === 'finalizada') { banner('bad', 'Coleta finalizada.'); return; }
+
+  const linhas = document.getElementById('coletaLoteTexto').value
+    .split('\n').map(l => l.trim()).filter(Boolean);
+  if (!linhas.length) { banner('bad', 'Nenhuma nota digitada.'); return; }
+
+  const agora = new Date().toISOString();
+  const novas = linhas.map(linha => {
+    const partes = linha.trim().split(/\s+/);
+    const nf = partes[0];
+    const volumes = partes.length > 1 ? partes[1] : '';
+    return normColetaNota({
+      id: 'cn_' + uid(), coletaId, notaFiscal: nf,
+      quantidadeVolumes: volumes, avariada: 'nao',
+      descricaoAvaria: '', fotos: [], status: 'incluida',
+      conferente: getNome(), dataHoraConferencia: agora, criadoEm: agora
+    });
+  });
+
+  novas.forEach(n => state.coletasNotas.push(n));
+  cacheGuardar(); renderDetalheColeta(); renderColetas();
+  document.getElementById('modalColetaLote').classList.add('hidden');
+  banner('ok', `${novas.length} nota(s) adicionada(s)! Salvando...`);
+
+  // Envia sequencialmente — mesma correção do inventário
+  (async () => {
+    let erros = 0;
+    for (let i = 0; i < novas.length; i++) {
+      try {
+        await post({ acao: 'adicionarNotaColeta', dados: {
+          id: novas[i].id, coletaId, notaFiscal: novas[i].notaFiscal,
+          quantidadeVolumes: novas[i].quantidadeVolumes,
+          avariada: 'nao', descricaoAvaria: '', fotos: [],
+          conferente: getNome()
+        }});
+      } catch(e) { erros++; }
+      if (i < novas.length - 1) await new Promise(r => setTimeout(r, 300));
+    }
+    if (erros === 0) {
+      banner('ok', `✅ ${novas.length} nota(s) salva(s) com sucesso!`);
+    } else {
+      banner('bad', `⚠️ ${erros} nota(s) não foram salvas. Verifique a conexão.`);
+    }
+  })();
+});
 
 // ── Busca de coleta ao digitar ────────────────────────────────────────────
 document.getElementById('coletaBusca').addEventListener('input', () => renderColetas());
