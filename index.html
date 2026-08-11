@@ -3351,10 +3351,11 @@ function abrirModalInvNota(invId, setor, editId) {
   renderThumbsFoto([], 'thumbsInvNota');
 
   // Reset tipo para 'nota' por padrão
+  const TIPO_IDS = { nota: 'invTipoNota', nota_fisica: 'invTipoNotaFisica', fisica: 'invTipoFisica' };
   function setTipo(tipo) {
     invTipoAtual = tipo;
-    ['nota','nota_fisica','fisica'].forEach(t => {
-      document.getElementById('invTipo' + t.split('_').map((w,i)=>i===0?w:w[0].toUpperCase()+w.slice(1)).join('')).classList.toggle('active', t === tipo);
+    Object.entries(TIPO_IDS).forEach(([t, id]) => {
+      document.getElementById(id).classList.toggle('active', t === tipo);
     });
     document.getElementById('invNFGrupo').style.display = tipo !== 'fisica' ? '' : 'none';
     document.getElementById('invDescFisicaGrupo').style.display = tipo !== 'nota' ? '' : 'none';
@@ -3364,8 +3365,14 @@ function abrirModalInvNota(invId, setor, editId) {
     const n = state.invNotas.find(x => x.id === editId);
     if (n) {
       setTipo(n.tipo || 'nota');
-      document.getElementById('invNF').value = n.notaFiscal;
-      document.getElementById('invDescFisica').value = n.descFisica || '';
+      // Para tipo 'fisica', notaFiscal foi salvo como "FÍSICA: descrição" — restaura a descrição
+      if ((n.tipo || 'nota') === 'fisica') {
+        document.getElementById('invNF').value = '';
+        document.getElementById('invDescFisica').value = n.descFisica || n.notaFiscal.replace(/^FÍSICA:\s*/i, '');
+      } else {
+        document.getElementById('invNF').value = n.notaFiscal;
+        document.getElementById('invDescFisica').value = n.descFisica || '';
+      }
       document.getElementById('invVolumes').value = n.volumes;
       invStatusAtual = n.status;
       if (n.status) {
@@ -3586,11 +3593,35 @@ function abrirModalConferencia(invId, setor) {
   confItensTemp = [];
   document.getElementById('modalConfTitulo').textContent = 'Conferência: ' + setor;
   document.getElementById('modalConfSub').textContent = 'Digite as notas encontradas fisicamente neste setor';
-  document.getElementById('confFisicaTexto').value = '';
   document.getElementById('modalConfEtapa1').style.display = '';
   document.getElementById('modalConfResultado').style.display = 'none';
+
+  // Pré-preenche com as notas já confirmadas (ok) na última conferência deste setor
+  // para que o usuário não precise redigitar o que já conferiu
+  const confAnterior = [...state.conferencias]
+    .filter(c => c.inventarioId === invId && c.setor === setor)
+    .sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora))[0];
+
+  if (confAnterior) {
+    const jaConfirmadas = state.confItens
+      .filter(i => i.conferenciaId === confAnterior.id && i.resultado === 'ok')
+      .map(i => i.notaFiscal);
+    document.getElementById('confFisicaTexto').value = jaConfirmadas.join('\n');
+    if (jaConfirmadas.length > 0) {
+      document.getElementById('modalConfSub').textContent =
+        `${jaConfirmadas.length} nota(s) já conferidas. Adicione as restantes abaixo:`;
+    }
+  } else {
+    document.getElementById('confFisicaTexto').value = '';
+  }
+
   document.getElementById('modalConferencia').classList.remove('hidden');
-  setTimeout(() => document.getElementById('confFisicaTexto').focus(), 100);
+  // Coloca o cursor no final do textarea
+  const ta = document.getElementById('confFisicaTexto');
+  setTimeout(() => {
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = ta.value.length;
+  }, 100);
 }
 
 document.getElementById('btnProcessarConf').addEventListener('click', () => {
