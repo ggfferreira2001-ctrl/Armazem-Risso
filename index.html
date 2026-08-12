@@ -958,7 +958,7 @@ body { overflow: hidden; }
       </div>
     </div>
     <!-- Barra flutuante de compartilhamento (aparece quando há seleção) -->
-    <div id="invShareBar" style="display:none;background:var(--surface-grad);border:1px solid var(--accentL);border-radius:var(--rs);padding:10px 14px;margin-bottom:10px;display:none;align-items:center;gap:10px;flex-wrap:wrap">
+    <div id="invShareBar" style="display:none;background:var(--surface-grad);border:1px solid var(--accentL);border-radius:var(--rs);padding:10px 14px;margin-bottom:10px;align-items:center;gap:10px;flex-wrap:wrap">
       <span id="invShareBarLabel" style="font-size:12px;font-weight:700;color:var(--text);flex:1">0 selecionado(s)</span>
       <button class="btn-share" id="btnInvShareWA" style="background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none">
         <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.117 1.524 5.847L0 24l6.335-1.502A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.652-.502-5.177-1.38l-.371-.22-3.762.893.927-3.654-.24-.38A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
@@ -1054,6 +1054,34 @@ body { overflow: hidden; }
 </div><!-- .app-main -->
 
 <!-- MODAIS -->
+
+<!-- Modal: Conferir nota da Coleta (uma por vez) -->
+<div class="modal-ov hidden" id="modalConferirColeta">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Conferência de Coleta</div>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:14px">Confira cada nota uma por vez. As já conferidas ficam marcadas.</p>
+    <div id="conferirColetaLista" style="margin-bottom:14px;max-height:300px;overflow-y:auto"></div>
+    <div id="conferirColetaDetalhe" style="display:none">
+      <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px" id="conferirColetaNFLabel"></div>
+      <div class="form-group">
+        <label class="form-label">Observação (opcional)</label>
+        <textarea class="form-input" id="conferirColetaObs" rows="2" placeholder="Ex: mercadoria em perfeito estado, caixa aberta..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Foto (opcional)</label>
+        <input type="file" id="conferirColetaFotoInput" accept="image/*" style="display:none">
+        <button class="btn btn-secondary btn-sm" id="btnConferirColetaFoto" type="button">+ Foto</button>
+        <div id="conferirColetaFotoPreview" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" id="btnConferirColetaVoltar">← Voltar</button>
+        <button class="btn btn-primary" id="btnConferirColetaSalvar">✅ Confirmar</button>
+      </div>
+    </div>
+    <button class="btn btn-secondary" id="btnFecharConferirColeta" style="margin-top:8px">Fechar</button>
+  </div>
+</div>
 
 <!-- Modal: Setor temporário no Inventário -->
 <div class="modal-ov hidden" id="modalSetorTemp">
@@ -3659,23 +3687,60 @@ document.getElementById('btnNovoInventario').addEventListener('click', () => {
 document.getElementById('invBuscaNota').addEventListener('input', e => {
   const t = e.target.value.trim().toLowerCase();
   const el = document.getElementById('invBuscaResultado');
-  if (!t) { el.innerHTML=''; return; }
-  const resultados = state.invNotas.filter(n => n.notaFiscal.toLowerCase().includes(t));
-  // também busca em separações
-  const sepResults = [];
-  state.separacoes.forEach(sep => {
-    const notasSep = state.notas.filter(n => n.separacaoId === sep.id && n.notaFiscal.toLowerCase().includes(t));
-    notasSep.forEach(n => sepResults.push({nf: n.notaFiscal, sep: sep.titulo}));
-  });
-  if (!resultados.length && !sepResults.length) { el.innerHTML=`<div class="inv-buscares">Nota não encontrada nos inventários.</div>`; return; }
-  el.innerHTML = [
-    ...resultados.map(n => {
-      const inv = state.inventarios.find(i => i.id === n.inventarioId);
-      return `<div class="inv-buscares">Nota <strong>${esc(n.notaFiscal)}</strong> · Setor: <strong>${esc(n.setor||'?')}</strong> · ${inv?esc(inv.titulo):'?'} ${n.status?'· '+badge(n.status):''}</div>`;
-    }),
-    ...sepResults.map(r => `<div class="inv-buscares">Nota <strong>${esc(r.nf)}</strong> · Separação: <strong>${esc(r.sep)}</strong></div>`)
-  ].join('');
+  if (t.length < 2) { el.innerHTML = ''; return; }
+
+  const resultados = state.invNotas.filter(n =>
+    n.notaFiscal.toLowerCase().includes(t) ||
+    (n.descFisica || '').toLowerCase().includes(t)
+  );
+
+  if (!resultados.length) {
+    el.innerHTML = `<div class="inv-buscares">Nota não encontrada nos inventários.</div>`;
+    return;
+  }
+
+  el.innerHTML = resultados.map(n => {
+    const inv = state.inventarios.find(i => i.id === n.inventarioId);
+    const tipo = n.tipo || 'nota';
+    const tipoLabel = tipo === 'fisica' ? '📦 Física' : tipo === 'nota_fisica' ? '📋📦 Nota+Física' : '📋 Nota';
+    return `<div class="inv-buscares" style="cursor:pointer;border-left:3px solid var(--accentL);padding:10px 14px;margin-bottom:6px;border-radius:var(--rs)"
+      onclick="irParaNotaInv('${esc(n.id)}','${esc(n.inventarioId)}','${esc(n.setor||'')}')">
+      <div style="font-size:13px;font-weight:800;color:var(--text)">NF ${esc(n.notaFiscal)} ${n.status ? badge(n.status) : ''}</div>
+      <div style="font-size:11.5px;color:var(--dim);margin-top:3px">
+        ${tipoLabel} &nbsp;·&nbsp; Setor: <strong>${esc(n.setor||'?')}</strong>
+        &nbsp;·&nbsp; ${inv ? esc(inv.titulo) : '?'}
+        ${n.volumes ? '&nbsp;·&nbsp; '+n.volumes+' vol.' : ''}
+      </div>
+      <div style="font-size:11px;color:var(--accentL);margin-top:4px;font-weight:600">Toque para abrir ↗</div>
+    </div>`;
+  }).join('');
 });
+
+function irParaNotaInv(notaId, invId, setor) {
+  // Abre o inventário e o setor, depois rola e destaca a nota
+  invAberto = invId;
+  invSetorAberto = invId + '__' + setor;
+  renderInventarios();
+  // Limpa a busca
+  document.getElementById('invBuscaNota').value = '';
+  document.getElementById('invBuscaResultado').innerHTML = '';
+  // Aguarda render e rola até a nota
+  setTimeout(() => {
+    const el = document.querySelector(`[data-inv-del="${CSS.escape(notaId)}"]`)
+      || document.querySelector(`[data-inv-edit="${CSS.escape(notaId)}"]`);
+    if (el) {
+      const row = el.closest('.inv-nota-row');
+      if (row) {
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // destaque visual temporário
+        row.style.transition = 'background 0.3s';
+        row.style.background = 'var(--accentD)';
+        row.style.borderRadius = '6px';
+        setTimeout(() => { row.style.background = ''; }, 2000);
+      }
+    }
+  }, 300);
+}
 
 // Comentários por nota de inventário
 function renderInvComentarios(invNotaId) {
@@ -3939,7 +4004,6 @@ function abrirRelatorioInventario() {
   document.getElementById('modalRelInv').classList.remove('hidden');
 }
 
-document.getElementById('btnRelatorioInventario').addEventListener('click', abrirRelatorioInventario);
 document.getElementById('btnFecharRelInv').addEventListener('click', () => fecharModal('modalRelInv'));
 document.getElementById('modalRelInv').addEventListener('click', e => { if(e.target===document.getElementById('modalRelInv')) fecharModal('modalRelInv'); });
 
@@ -4562,6 +4626,7 @@ function renderDetalheColeta() {
       ${c.status === 'em_andamento'
         ? `<button class="btn btn-primary btn-sm" onclick="adicionarNotaColeta()">+ Nota</button>
            <button class="btn btn-secondary btn-sm" onclick="abrirModalColetaLote()">+ Lote</button>
+           <button class="btn btn-secondary btn-sm" onclick="abrirModalConferirColeta()">✅ Conferir</button>
            <button class="btn btn-secondary btn-sm" onclick="finalizarColeta('${esc(c.id)}')">Finalizar</button>`
         : `<span style="font-size:12px;color:var(--ok);font-weight:600">✅ Coleta finalizada</span>
            <button class="btn btn-secondary btn-sm" onclick="reabrirColeta('${esc(c.id)}')">Reabrir</button>`
@@ -4582,6 +4647,7 @@ function renderDetalheColeta() {
             📦 ${n.quantidadeVolumes||'—'} vol.
             &nbsp;·&nbsp; 👤 ${esc(n.conferente)}
             &nbsp;·&nbsp; 🕐 ${fmtDT(n.dataHoraConferencia||n.criadoEm)}
+            ${n.status === 'conferida' ? '&nbsp;·&nbsp; <span style="color:var(--ok);font-weight:700">✅ Conferida</span>' : ''}
           </div>
           ${n.avariada === 'sim' ? `<div class="avaria-badge">⚠️ Avariada${n.descricaoAvaria ? ': ' + esc(n.descricaoAvaria) : ''}</div>` : ''}
           ${n.observacoes ? `<div style="font-size:11px;color:var(--dim);margin-top:3px">📝 ${esc(n.observacoes)}</div>` : ''}
@@ -5101,6 +5167,136 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+// ── Conferência de Coleta (duas etapas) ──────────────────────────────────
+let _confColetaNotaAtual = null;
+let _confColetaFotos = [];
+
+function abrirModalConferirColeta() {
+  _confColetaNotaAtual = null;
+  _confColetaFotos = [];
+  document.getElementById('conferirColetaLista').style.display = '';
+  document.getElementById('conferirColetaDetalhe').style.display = 'none';
+  document.getElementById('btnFecharConferirColeta').style.display = '';
+  renderListaConferirColeta();
+  document.getElementById('modalConferirColeta').classList.remove('hidden');
+}
+
+function renderListaConferirColeta() {
+  const coletaId = _coletaAbertaId;
+  const notas = state.coletasNotas.filter(n => n.coletaId === coletaId)
+    .sort((a, b) => new Date(a.criadoEm||0) - new Date(b.criadoEm||0));
+
+  const el = document.getElementById('conferirColetaLista');
+  if (!notas.length) { el.innerHTML = '<p style="color:var(--dim);font-size:13px">Nenhuma nota nesta coleta.</p>'; return; }
+
+  const conferidas = notas.filter(n => n.status === 'conferida').length;
+  el.innerHTML = `
+    <div style="font-size:12px;color:var(--dim);margin-bottom:10px">
+      ${conferidas} de ${notas.length} conferida(s)
+      <div style="background:var(--surface2);border-radius:4px;height:5px;margin-top:5px;overflow:hidden">
+        <div style="height:100%;width:${Math.round(conferidas/notas.length*100)}%;background:var(--ok);transition:width .3s"></div>
+      </div>
+    </div>
+    ${notas.map(n => {
+      const conf = n.status === 'conferida';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer"
+        onclick="abrirConferirColetaNota('${esc(n.id)}')">
+        <div style="width:22px;height:22px;border-radius:50%;background:${conf?'var(--ok)':'var(--surface2)'};border:2px solid ${conf?'var(--ok)':'var(--border2)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          ${conf ? '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+        </div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700;color:${conf?'var(--ok)':'var(--text)'}">NF ${esc(n.notaFiscal)}</div>
+          <div style="font-size:11.5px;color:var(--dim)">${n.quantidadeVolumes?n.quantidadeVolumes+' vol. · ':''}${conf?'✅ Conferida':'Pendente'}</div>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--dim)"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>`;
+    }).join('')}`;
+}
+
+function abrirConferirColetaNota(notaId) {
+  const n = state.coletasNotas.find(x => x.id === notaId);
+  if (!n) return;
+  _confColetaNotaAtual = notaId;
+  _confColetaFotos = [];
+  document.getElementById('conferirColetaNFLabel').textContent = 'NF ' + n.notaFiscal + (n.quantidadeVolumes ? ' — ' + n.quantidadeVolumes + ' vol.' : '');
+  document.getElementById('conferirColetaObs').value = n.obsConferencia || '';
+  document.getElementById('conferirColetaFotoPreview').innerHTML = '';
+  document.getElementById('conferirColetaLista').style.display = 'none';
+  document.getElementById('conferirColetaDetalhe').style.display = '';
+  document.getElementById('btnFecharConferirColeta').style.display = 'none';
+}
+
+document.getElementById('btnConferirColetaVoltar').addEventListener('click', () => {
+  _confColetaNotaAtual = null;
+  _confColetaFotos = [];
+  document.getElementById('conferirColetaLista').style.display = '';
+  document.getElementById('conferirColetaDetalhe').style.display = 'none';
+  document.getElementById('btnFecharConferirColeta').style.display = '';
+  renderListaConferirColeta();
+});
+
+document.getElementById('btnConferirColetaFoto').addEventListener('click', () => {
+  document.getElementById('conferirColetaFotoInput').click();
+});
+document.getElementById('conferirColetaFotoInput').addEventListener('change', async e => {
+  for (const f of [...e.target.files]) {
+    const b64 = await processarImg(f);
+    _confColetaFotos.push(b64);
+  }
+  e.target.value = '';
+  const prev = document.getElementById('conferirColetaFotoPreview');
+  prev.innerHTML = _confColetaFotos.map((_, i) =>
+    `<div style="position:relative;width:52px;height:52px">
+      <img src="${_confColetaFotos[i]}" style="width:52px;height:52px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+      <button onclick="_confColetaFotos.splice(${i},1);document.getElementById('conferirColetaFotoInput').dispatchEvent(new Event('preview'))" style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:var(--bad);color:#fff;border:none;font-size:10px;cursor:pointer">✕</button>
+    </div>`
+  ).join('');
+});
+
+document.getElementById('btnConferirColetaSalvar').addEventListener('click', async () => {
+  const notaId = _confColetaNotaAtual;
+  if (!notaId) return;
+  const obs = document.getElementById('conferirColetaObs').value.trim();
+  const btn = document.getElementById('btnConferirColetaSalvar');
+  btn.disabled = true;
+  try {
+    await post({
+      acao: 'atualizarNotaColeta',
+      id: notaId,
+      coletaId: _coletaAbertaId,
+      responsavel: getNome(),
+      campos: {
+        status: 'conferida',
+        obsConferencia: obs,
+        fotosNovas: _confColetaFotos,
+        fotosExistentes: (state.coletasNotas.find(x=>x.id===notaId)?.fotos||[])
+      }
+    });
+    const n = state.coletasNotas.find(x => x.id === notaId);
+    if (n) { n.status = 'conferida'; n.obsConferencia = obs; }
+    cacheGuardar();
+    banner('ok', 'Nota conferida!');
+    // volta para a lista e atualiza
+    _confColetaNotaAtual = null;
+    _confColetaFotos = [];
+    document.getElementById('conferirColetaLista').style.display = '';
+    document.getElementById('conferirColetaDetalhe').style.display = 'none';
+    document.getElementById('btnFecharConferirColeta').style.display = '';
+    renderListaConferirColeta();
+    renderDetalheColeta();
+  } catch(e) {
+    banner('bad', 'Erro: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('btnFecharConferirColeta').addEventListener('click', () => {
+  document.getElementById('modalConferirColeta').classList.add('hidden');
+});
+
+// ── Conferência de Coleta (fim) ───────────────────────────────────────────
 
 // ── Lote de notas na Coleta ───────────────────────────────────────────────
 function abrirModalColetaLote() {
