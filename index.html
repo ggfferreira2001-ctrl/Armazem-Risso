@@ -1055,12 +1055,30 @@ body { overflow: hidden; }
 
 <!-- MODAIS -->
 
+<!-- Modal: Foto do Romaneio -->
+<div class="modal-ov hidden" id="modalRomaneio">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📄 Foto do Romaneio</div>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:14px">Anexe a foto do romaneio desta coleta. Ao menos uma foto é obrigatória para finalizar.</p>
+    <div id="romaneioFotoPreview" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+    <input type="file" id="romaneioFotoInput" accept="image/*" multiple style="display:none">
+    <button class="btn btn-secondary" id="btnRomaneioAddFoto" type="button">📷 Adicionar Foto</button>
+    <button class="btn btn-primary" id="btnRomaneioSalvar" style="margin-top:8px">Salvar</button>
+    <button class="btn btn-secondary" id="btnRomaneioFechar">Cancelar</button>
+  </div>
+</div>
+
 <!-- Modal: Conferir nota da Coleta (uma por vez) -->
 <div class="modal-ov hidden" id="modalConferirColeta">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title">Conferência de Coleta</div>
-    <p style="font-size:12px;color:var(--dim);margin-bottom:14px">Confira cada nota uma por vez. As já conferidas ficam marcadas.</p>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:10px">Confira cada nota uma por vez. As já conferidas ficam marcadas.</p>
+    <div class="search-wrap" style="margin-bottom:10px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="form-input" id="conferirColetaBusca" placeholder="Buscar nota fiscal..." inputmode="numeric" autocomplete="off">
+    </div>
     <div id="conferirColetaLista" style="margin-bottom:14px;max-height:300px;overflow-y:auto"></div>
     <div id="conferirColetaDetalhe" style="display:none">
       <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px" id="conferirColetaNFLabel"></div>
@@ -4493,6 +4511,7 @@ function normColeta(c) {
   const r = Object.assign({}, c);
   ['id','empresa','responsavel','status','observacoes','criadoPor','ultimoUsuario'].forEach(k => r[k] = String(r[k]||''));
   r.status = r.status || 'em_andamento';
+  if (!Array.isArray(r.fotosRomaneio)) r.fotosRomaneio = r.fotosRomaneio ? String(r.fotosRomaneio).split('|').filter(Boolean) : [];
   return r;
 }
 function normColetaNota(n) {
@@ -4615,6 +4634,9 @@ function renderDetalheColeta() {
   const avariadas = notas.filter(n => n.avariada === 'sim').length;
   const dataFmt = c.dataColeta ? new Date(c.dataColeta).toLocaleDateString('pt-BR') : '';
 
+  const romaneiofFotos = Array.isArray(c.fotosRomaneio) ? c.fotosRomaneio : (c.fotosRomaneio ? String(c.fotosRomaneio).split('|').filter(Boolean) : []);
+  const temRomaneio = romaneiofFotos.length > 0;
+
   let html = `<div class="coleta-detail-hdr">
     <div class="coleta-detail-empresa">${esc(c.empresa)}</div>
     <div class="coleta-detail-meta">
@@ -4622,14 +4644,33 @@ function renderDetalheColeta() {
       📦 ${notas.length} nota(s) &nbsp;|&nbsp; ${avariadas > 0 ? `⚠️ ${avariadas} avariada(s)` : '✅ Sem avarias'}
       ${c.observacoes ? `<br>📝 ${esc(c.observacoes)}` : ''}
     </div>
+
+    <!-- Romaneio -->
+    <div style="margin-top:12px;padding:10px 14px;background:var(--surface2);border-radius:var(--rs);border:1px solid ${temRomaneio ? 'var(--ok)' : 'var(--warn)'}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:${temRomaneio ? 'var(--ok)' : 'var(--warn)'}">
+            ${temRomaneio ? '✅ Romaneio' : '⚠️ Romaneio obrigatório'}
+          </div>
+          <div style="font-size:11px;color:var(--dim);margin-top:2px">
+            ${temRomaneio ? romaneiofFotos.length + ' foto(s) anexada(s)' : 'Adicione ao menos 1 foto do romaneio antes de finalizar'}
+          </div>
+        </div>
+        ${c.status === 'em_andamento' ? `<button class="btn btn-secondary btn-sm" onclick="abrirFotoRomaneio()">📷 ${temRomaneio ? 'Gerenciar' : 'Adicionar foto'}</button>` : ''}
+      </div>
+      ${temRomaneio ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+        ${romaneiofFotos.map(f => `<a href="${esc(f)}" target="_blank"><img src="${esc(f)}" style="width:52px;height:52px;object-fit:cover;border-radius:6px;border:1px solid var(--border)"></a>`).join('')}
+      </div>` : ''}
+    </div>
+
     <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
       ${c.status === 'em_andamento'
         ? `<button class="btn btn-primary btn-sm" onclick="adicionarNotaColeta()">+ Nota</button>
            <button class="btn btn-secondary btn-sm" onclick="abrirModalColetaLote()">+ Lote</button>
            <button class="btn btn-secondary btn-sm" onclick="abrirModalConferirColeta()">✅ Conferir</button>
-           <button class="btn btn-secondary btn-sm" onclick="finalizarColeta('${esc(c.id)}')">Finalizar</button>`
+           <button class="btn btn-secondary btn-sm" onclick="finalizarColeta('${esc(c.id)}')" ${!temRomaneio ? 'title="Adicione o romaneio antes de finalizar"' : ''}>Finalizar</button>`
         : `<span style="font-size:12px;color:var(--ok);font-weight:600">✅ Coleta finalizada</span>
-           <button class="btn btn-secondary btn-sm" onclick="reabrirColeta('${esc(c.id)}')">Reabrir</button>`
+           <button class="btn btn-secondary btn-sm" onclick="reabrirColeta('${esc(c.id)}')\">Reabrir</button>`
       }
       <button class="btn btn-danger btn-sm" onclick="excluirColeta('${esc(c.id)}')">Excluir</button>
     </div>
@@ -4739,7 +4780,14 @@ document.getElementById('btnSalvarColeta').addEventListener('click', async () =>
 
 // ── Finalizar / reabrir coleta ────────────────────────────────────────────
 async function finalizarColeta(id) {
-  if (!confirm('Finalizar esta coleta? Não será possível adicionar novas notas.')) return;
+  const c = state.coletas.find(x => x.id === id);
+  if (!c) return;
+  const fotos = Array.isArray(c.fotosRomaneio) ? c.fotosRomaneio : (c.fotosRomaneio ? String(c.fotosRomaneio).split('|').filter(Boolean) : []);
+  if (fotos.length === 0) {
+    banner('bad', '⚠️ Adicione ao menos uma foto do romaneio antes de finalizar.');
+    return;
+  }
+  if (!confirm('Finalizar esta coleta? As notas não poderão mais ser editadas sem senha de administrador.')) return;
   try {
     await post({ acao:'finalizarColeta', id, responsavel: getNome() });
     const c = state.coletas.find(x => x.id === id);
@@ -5168,6 +5216,90 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+// ── Foto do Romaneio ─────────────────────────────────────────────────────
+let _romaneioFotosNovas = [];
+let _romaneioFotosExistentes = [];
+
+function abrirFotoRomaneio() {
+  const c = state.coletas.find(x => x.id === _coletaAbertaId);
+  if (!c) return;
+  _romaneioFotosNovas = [];
+  _romaneioFotosExistentes = Array.isArray(c.fotosRomaneio)
+    ? [...c.fotosRomaneio]
+    : (c.fotosRomaneio ? String(c.fotosRomaneio).split('|').filter(Boolean) : []);
+  renderRomaneioPreview();
+  document.getElementById('modalRomaneio').classList.remove('hidden');
+}
+
+function renderRomaneioPreview() {
+  const cont = document.getElementById('romaneioFotoPreview');
+  const todas = [
+    ..._romaneioFotosExistentes.map((url, i) => ({ url, isNew: false, idx: i })),
+    ..._romaneioFotosNovas.map((b64, i) => ({ url: b64, isNew: true, idx: i }))
+  ];
+  if (!todas.length) { cont.innerHTML = '<p style="font-size:12px;color:var(--faint)">Nenhuma foto ainda.</p>'; return; }
+  cont.innerHTML = todas.map((f, gi) =>
+    `<div style="position:relative;width:72px;height:72px">
+      <img src="${esc(f.url)}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+      <button onclick="removerRomaneioFoto(${f.isNew},${f.idx})" style="position:absolute;top:-5px;right:-5px;width:20px;height:20px;border-radius:50%;background:var(--bad);color:#fff;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>`
+  ).join('');
+}
+
+function removerRomaneioFoto(isNew, idx) {
+  if (isNew) _romaneioFotosNovas.splice(idx, 1);
+  else _romaneioFotosExistentes.splice(idx, 1);
+  renderRomaneioPreview();
+}
+
+document.getElementById('btnRomaneioAddFoto').addEventListener('click', () => {
+  document.getElementById('romaneioFotoInput').click();
+});
+
+document.getElementById('romaneioFotoInput').addEventListener('change', async e => {
+  for (const f of [...e.target.files]) {
+    const b64 = await processarImg(f);
+    _romaneioFotosNovas.push(b64);
+  }
+  e.target.value = '';
+  renderRomaneioPreview();
+});
+
+document.getElementById('btnRomaneioSalvar').addEventListener('click', async () => {
+  const total = _romaneioFotosExistentes.length + _romaneioFotosNovas.length;
+  if (total === 0) { banner('bad', 'Adicione ao menos uma foto do romaneio.'); return; }
+  const btn = document.getElementById('btnRomaneioSalvar');
+  btn.disabled = true;
+  try {
+    await post({
+      acao: 'atualizarColeta',
+      id: _coletaAbertaId,
+      responsavel: getNome(),
+      campos: {
+        fotosRomaneioNovas: _romaneioFotosNovas,
+        fotosRomaneioExistentes: _romaneioFotosExistentes
+      }
+    });
+    // Atualiza state local com as existentes (novas serão retornadas pelo servidor no próximo sync)
+    const c = state.coletas.find(x => x.id === _coletaAbertaId);
+    if (c) c.fotosRomaneio = [..._romaneioFotosExistentes];
+    cacheGuardar();
+    document.getElementById('modalRomaneio').classList.add('hidden');
+    renderDetalheColeta();
+    banner('ok', `${total} foto(s) do romaneio salva(s)!`);
+  } catch(e) {
+    banner('bad', 'Erro: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('btnRomaneioFechar').addEventListener('click', () => {
+  document.getElementById('modalRomaneio').classList.add('hidden');
+});
+
+// ── Foto do Romaneio (fim) ────────────────────────────────────────────────
+
 // ── Conferência de Coleta (duas etapas) ──────────────────────────────────
 let _confColetaNotaAtual = null;
 let _confColetaFotos = [];
@@ -5178,40 +5310,53 @@ function abrirModalConferirColeta() {
   document.getElementById('conferirColetaLista').style.display = '';
   document.getElementById('conferirColetaDetalhe').style.display = 'none';
   document.getElementById('btnFecharConferirColeta').style.display = '';
+  document.getElementById('conferirColetaBusca').value = '';
   renderListaConferirColeta();
   document.getElementById('modalConferirColeta').classList.remove('hidden');
+  setTimeout(() => document.getElementById('conferirColetaBusca').focus(), 150);
 }
 
 function renderListaConferirColeta() {
   const coletaId = _coletaAbertaId;
-  const notas = state.coletasNotas.filter(n => n.coletaId === coletaId)
+  const busca = (document.getElementById('conferirColetaBusca')?.value || '').trim().toLowerCase();
+  const todasNotas = state.coletasNotas
+    .filter(n => n.coletaId === coletaId)
     .sort((a, b) => new Date(a.criadoEm||0) - new Date(b.criadoEm||0));
 
-  const el = document.getElementById('conferirColetaLista');
-  if (!notas.length) { el.innerHTML = '<p style="color:var(--dim);font-size:13px">Nenhuma nota nesta coleta.</p>'; return; }
+  const notas = busca
+    ? todasNotas.filter(n => n.notaFiscal.toLowerCase().includes(busca))
+    : todasNotas;
 
-  const conferidas = notas.filter(n => n.status === 'conferida').length;
+  const el = document.getElementById('conferirColetaLista');
+  if (!todasNotas.length) { el.innerHTML = '<p style="color:var(--dim);font-size:13px">Nenhuma nota nesta coleta.</p>'; return; }
+
+  const conferidas = todasNotas.filter(n => n.status === 'conferida').length;
+  const pct = Math.round(conferidas / todasNotas.length * 100);
+
   el.innerHTML = `
     <div style="font-size:12px;color:var(--dim);margin-bottom:10px">
-      ${conferidas} de ${notas.length} conferida(s)
+      ${conferidas} de ${todasNotas.length} conferida(s)
       <div style="background:var(--surface2);border-radius:4px;height:5px;margin-top:5px;overflow:hidden">
-        <div style="height:100%;width:${Math.round(conferidas/notas.length*100)}%;background:var(--ok);transition:width .3s"></div>
+        <div style="height:100%;width:${pct}%;background:var(--ok);transition:width .3s"></div>
       </div>
     </div>
-    ${notas.map(n => {
-      const conf = n.status === 'conferida';
-      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer"
-        onclick="abrirConferirColetaNota('${esc(n.id)}')">
-        <div style="width:22px;height:22px;border-radius:50%;background:${conf?'var(--ok)':'var(--surface2)'};border:2px solid ${conf?'var(--ok)':'var(--border2)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          ${conf ? '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
-        </div>
-        <div style="flex:1">
-          <div style="font-size:14px;font-weight:700;color:${conf?'var(--ok)':'var(--text)'}">NF ${esc(n.notaFiscal)}</div>
-          <div style="font-size:11.5px;color:var(--dim)">${n.quantidadeVolumes?n.quantidadeVolumes+' vol. · ':''}${conf?'✅ Conferida':'Pendente'}</div>
-        </div>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--dim)"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>`;
-    }).join('')}`;
+    ${!notas.length
+      ? `<p style="color:var(--faint);font-size:13px;text-align:center;padding:12px 0">Nenhuma nota encontrada.</p>`
+      : notas.map(n => {
+          const conf = n.status === 'conferida';
+          return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer"
+            onclick="abrirConferirColetaNota('${esc(n.id)}')">
+            <div style="width:22px;height:22px;border-radius:50%;background:${conf?'var(--ok)':'var(--surface2)'};border:2px solid ${conf?'var(--ok)':'var(--border2)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              ${conf ? '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" style="width:12px;height:12px"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+            </div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;color:${conf?'var(--ok)':'var(--text)'}">NF ${esc(n.notaFiscal)}</div>
+              <div style="font-size:11.5px;color:var(--dim)">${n.quantidadeVolumes?n.quantidadeVolumes+' vol. · ':''}${conf?'✅ Conferida':'Pendente'}</div>
+            </div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--dim)"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>`;
+        }).join('')
+    }`;
 }
 
 function abrirConferirColetaNota(notaId) {
@@ -5277,9 +5422,9 @@ document.getElementById('btnConferirColetaSalvar').addEventListener('click', asy
     if (n) { n.status = 'conferida'; n.obsConferencia = obs; }
     cacheGuardar();
     banner('ok', 'Nota conferida!');
-    // volta para a lista e atualiza
     _confColetaNotaAtual = null;
     _confColetaFotos = [];
+    document.getElementById('conferirColetaBusca').value = '';
     document.getElementById('conferirColetaLista').style.display = '';
     document.getElementById('conferirColetaDetalhe').style.display = 'none';
     document.getElementById('btnFecharConferirColeta').style.display = '';
@@ -5295,6 +5440,8 @@ document.getElementById('btnConferirColetaSalvar').addEventListener('click', asy
 document.getElementById('btnFecharConferirColeta').addEventListener('click', () => {
   document.getElementById('modalConferirColeta').classList.add('hidden');
 });
+
+document.getElementById('conferirColetaBusca').addEventListener('input', () => renderListaConferirColeta());
 
 // ── Conferência de Coleta (fim) ───────────────────────────────────────────
 
