@@ -3268,8 +3268,8 @@ function renderInventarios() {
               <span class="inv-setor-nome">${esc(setor)}</span>
               ${badgeSetor}
               ${!enc ? `
-                <button class="btn btn-primary btn-sm" style="padding:5px 10px;font-size:11px" data-inv-abrir-lote="${esc(setorKey)}" data-inv-lote-id2="${esc(inv.id)}" data-inv-lote-setor2="${esc(setor)}" onclick="event.stopPropagation()">+ Notas</button>
-                <button class="btn btn-secondary btn-sm" style="padding:5px 10px;font-size:11px" data-inv-conferir="${esc(setorKey)}" data-inv-conf-id="${esc(inv.id)}" data-inv-conf-setor="${esc(setor)}" onclick="event.stopPropagation()">+ F&#237;sica</button>
+                <button class="btn btn-primary btn-sm" style="padding:5px 10px;font-size:11px" data-inv-abrir-lote="${esc(setorKey)}" data-inv-lote-id2="${esc(inv.id)}" data-inv-lote-setor2="${esc(setor)}" >+ Notas</button>
+                <button class="btn btn-secondary btn-sm" style="padding:5px 10px;font-size:11px" data-inv-conferir="${esc(setorKey)}" data-inv-conf-id="${esc(inv.id)}" data-inv-conf-setor="${esc(setor)}" >+ F&#237;sica</button>
               ` : ''}
               <span style="color:var(--dim);font-size:11px">&#9660;</span>
             </div>
@@ -3461,6 +3461,24 @@ document.getElementById('listaInventarios').addEventListener('click', e => {
     return;
   }
 
+  // botão + Física — ANTES do toggle do setor para evitar re-render
+  const confBtn = e.target.closest('[data-inv-conferir]');
+  if (confBtn) {
+    const invId = confBtn.dataset.invConfId;
+    const setor = confBtn.dataset.invConfSetor;
+    abrirModalInvNota(invId, setor);
+    setTimeout(() => {
+      invTipoAtual = 'fisica';
+      ['invTipoNota','invTipoNotaFisica','invTipoFisica'].forEach(id => {
+        document.getElementById(id).classList.toggle('active', id === 'invTipoFisica');
+      });
+      document.getElementById('invNFGrupo').style.display = 'none';
+      document.getElementById('invDescFisicaGrupo').style.display = '';
+      document.getElementById('invDescFisica').focus();
+    }, 50);
+    return;
+  }
+
   const apagarBtn = e.target.closest('[data-inv-apagar]');
   if (apagarBtn) {
     pedirSenhaAdm(() => {
@@ -3500,34 +3518,7 @@ document.getElementById('listaInventarios').addEventListener('click', e => {
     });
     return;
   }
-  // botão Conferir setor
-  // botão + Física — abre modal de invNota pré-selecionado em "Só Física"
-  const confBtn = e.target.closest('[data-inv-conferir]');
-  if (confBtn) {
-    const invId = confBtn.dataset.invConfId;
-    const setor = confBtn.dataset.invConfSetor;
-    abrirModalInvNota(invId, setor);
-    // pré-seleciona tipo "fisica" após abrir
-    setTimeout(() => {
-      invTipoAtual = 'fisica';
-      ['invTipoNota','invTipoNotaFisica','invTipoFisica'].forEach(id => {
-        document.getElementById(id).classList.toggle('active', id === 'invTipoFisica');
-      });
-      document.getElementById('invNFGrupo').style.display = 'none';
-      document.getElementById('invDescFisicaGrupo').style.display = '';
-      document.getElementById('invDescFisica').focus();
-    }, 50);
-    return;
-  }
-  // toggle setor — só expande/colapsa, NUNCA abre modal automático
-  const setorHdr = e.target.closest('[data-inv-setor]');
-  if (setorHdr && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]') && !e.target.closest('[data-inv-conferir]')) {
-    const setorKey = setorHdr.dataset.invSetor;
-    invSetorAberto = invSetorAberto === setorKey ? null : setorKey;
-    renderInventarios();
-    return;
-  }
-  // botão + Adicionar Notas dentro do setor expandido
+  // botão + Adicionar Notas — ANTES do toggle do setor para evitar re-render
   const abrirLoteBtn = e.target.closest('[data-inv-abrir-lote]');
   if (abrirLoteBtn) {
     const inv = state.inventarios.find(i=>i.id===abrirLoteBtn.dataset.invLoteId2);
@@ -3535,6 +3526,15 @@ document.getElementById('listaInventarios').addEventListener('click', e => {
     abrirModalLote(abrirLoteBtn.dataset.invLoteId2, abrirLoteBtn.dataset.invLoteSetor2);
     return;
   }
+  // toggle setor — só expande/colapsa, NUNCA abre modal automático
+  const setorHdr = e.target.closest('[data-inv-setor]');
+  if (setorHdr && !e.target.closest('[data-inv-edit]') && !e.target.closest('[data-inv-del]') && !e.target.closest('[data-inv-conferir]') && !e.target.closest('[data-inv-abrir-lote]')) {
+    const setorKey = setorHdr.dataset.invSetor;
+    invSetorAberto = invSetorAberto === setorKey ? null : setorKey;
+    renderInventarios();
+    return;
+  }
+  // (abrirLoteBtn já foi tratado acima)
   // editar nota
   const editBtn = e.target.closest('[data-inv-edit]');
   if (editBtn) {
