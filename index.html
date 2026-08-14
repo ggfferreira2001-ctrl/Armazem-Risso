@@ -1083,8 +1083,19 @@ body { overflow: hidden; }
     <div id="conferirColetaDetalhe" style="display:none">
       <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px" id="conferirColetaNFLabel"></div>
       <div class="form-group">
+        <label class="form-label">Estado da mercadoria</label>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="chip active" id="confColetaEstadoOk">✅ Perfeito estado</button>
+          <button type="button" class="chip" id="confColetaEstadoAvaria">⚠️ Avariada</button>
+        </div>
+      </div>
+      <div class="form-group" id="confColetaAvariaGrupo" style="display:none">
+        <label class="form-label">Descrição da avaria <span style="color:var(--bad)">*</span></label>
+        <textarea class="form-input" id="confColetaAvariaDesc" rows="2" placeholder="Ex: caixa rasgada, produto molhado..."></textarea>
+      </div>
+      <div class="form-group">
         <label class="form-label">Observação (opcional)</label>
-        <textarea class="form-input" id="conferirColetaObs" rows="2" placeholder="Ex: mercadoria em perfeito estado, caixa aberta..."></textarea>
+        <textarea class="form-input" id="conferirColetaObs" rows="2" placeholder="Ex: volumes conferidos, lacre intacto..."></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Foto (opcional)</label>
@@ -5351,13 +5362,24 @@ function renderListaConferirColeta() {
             </div>
             <div style="flex:1">
               <div style="font-size:14px;font-weight:700;color:${conf?'var(--ok)':'var(--text)'}">NF ${esc(n.notaFiscal)}</div>
-              <div style="font-size:11.5px;color:var(--dim)">${n.quantidadeVolumes?n.quantidadeVolumes+' vol. · ':''}${conf?'✅ Conferida':'Pendente'}</div>
+              <div style="font-size:11.5px;color:var(--dim)">${n.quantidadeVolumes?n.quantidadeVolumes+' vol. · ':''}${conf ? (n.avariada==='sim' ? '⚠️ Conferida c/ avaria' : '✅ Conferida') : 'Pendente'}</div>
             </div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--dim)"><polyline points="9 18 15 12 9 6"/></svg>
           </div>`;
         }).join('')
     }`;
 }
+
+// Toggle avaria na conferência
+['confColetaEstadoOk', 'confColetaEstadoAvaria'].forEach(id => {
+  document.getElementById(id).addEventListener('click', () => {
+    const avaria = id === 'confColetaEstadoAvaria';
+    document.getElementById('confColetaEstadoOk').classList.toggle('active', !avaria);
+    document.getElementById('confColetaEstadoAvaria').classList.toggle('active', avaria);
+    document.getElementById('confColetaAvariaGrupo').style.display = avaria ? '' : 'none';
+    if (!avaria) document.getElementById('confColetaAvariaDesc').value = '';
+  });
+});
 
 function abrirConferirColetaNota(notaId) {
   const n = state.coletasNotas.find(x => x.id === notaId);
@@ -5367,6 +5389,12 @@ function abrirConferirColetaNota(notaId) {
   document.getElementById('conferirColetaNFLabel').textContent = 'NF ' + n.notaFiscal + (n.quantidadeVolumes ? ' — ' + n.quantidadeVolumes + ' vol.' : '');
   document.getElementById('conferirColetaObs').value = n.obsConferencia || '';
   document.getElementById('conferirColetaFotoPreview').innerHTML = '';
+  // Restaura estado de avaria
+  const jaAvariada = n.avariada === 'sim';
+  document.getElementById('confColetaEstadoOk').classList.toggle('active', !jaAvariada);
+  document.getElementById('confColetaEstadoAvaria').classList.toggle('active', jaAvariada);
+  document.getElementById('confColetaAvariaGrupo').style.display = jaAvariada ? '' : 'none';
+  document.getElementById('confColetaAvariaDesc').value = n.descricaoAvaria || '';
   document.getElementById('conferirColetaLista').style.display = 'none';
   document.getElementById('conferirColetaDetalhe').style.display = '';
   document.getElementById('btnFecharConferirColeta').style.display = 'none';
@@ -5402,6 +5430,9 @@ document.getElementById('conferirColetaFotoInput').addEventListener('change', as
 document.getElementById('btnConferirColetaSalvar').addEventListener('click', async () => {
   const notaId = _confColetaNotaAtual;
   if (!notaId) return;
+  const avariada = document.getElementById('confColetaEstadoAvaria').classList.contains('active') ? 'sim' : 'nao';
+  const descricaoAvaria = document.getElementById('confColetaAvariaDesc').value.trim();
+  if (avariada === 'sim' && !descricaoAvaria) { banner('bad', 'Descreva a avaria.'); return; }
   const obs = document.getElementById('conferirColetaObs').value.trim();
   const btn = document.getElementById('btnConferirColetaSalvar');
   btn.disabled = true;
@@ -5413,15 +5444,17 @@ document.getElementById('btnConferirColetaSalvar').addEventListener('click', asy
       responsavel: getNome(),
       campos: {
         status: 'conferida',
+        avariada,
+        descricaoAvaria,
         obsConferencia: obs,
         fotosNovas: _confColetaFotos,
         fotosExistentes: (state.coletasNotas.find(x=>x.id===notaId)?.fotos||[])
       }
     });
     const n = state.coletasNotas.find(x => x.id === notaId);
-    if (n) { n.status = 'conferida'; n.obsConferencia = obs; }
+    if (n) { n.status = 'conferida'; n.avariada = avariada; n.descricaoAvaria = descricaoAvaria; n.obsConferencia = obs; }
     cacheGuardar();
-    banner('ok', 'Nota conferida!');
+    banner('ok', avariada === 'sim' ? '⚠️ Nota conferida com avaria.' : '✅ Nota conferida!');
     _confColetaNotaAtual = null;
     _confColetaFotos = [];
     document.getElementById('conferirColetaBusca').value = '';
